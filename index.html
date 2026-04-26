@@ -102,22 +102,22 @@
     <div id="view-landing" class="container">
         <div class="hero text-center" style="padding-top: 5vh;">
             <div style="display: inline-block; padding: 0.4rem 1rem; border-radius: 20px; background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.2); color: var(--accent-cyan); font-size: 0.8rem; margin-bottom: 1rem; font-weight: 600;">
-                TrashTech Sistem Digital Sampah Terpadu
+                Sistem Terpadu Iuran Perumahan (Vercel API Mode) V7.2
             </div>
             
             <div style="margin-bottom: 10px;">
                 <img src="https://freedomdigital.biz.id/gambarbebas/20260311-015925_logo_sampahku_03.png" alt="Logo TrashTech" style="width: 140px; height: auto; filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.3));">
             </div>
 
-            <h1>TrashTech <span class="text-gradient">AMCM</span></h1>
-            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal Warga AMCM Pembayaran Online</p>
+            <h1>TrashTech <span class="text-gradient">Manager</span></h1>
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal warga untuk pembayaran iuran bulanan yang transparan, berjalan sangat cepat melalui API Server.</p>
             
             <div class="glass-card" style="max-width: 350px; margin: 0 auto; padding: 2rem; animation: fadeIn 0.5s ease;">
                 <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Masuk Sistem</h2>
                 <form id="form-login" onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label class="form-label">Username / Nama Warga</label>
-                        <input type="text" id="username" class="form-input" required placeholder="Cth: Budi Santoso">
+                        <input type="text" id="username" class="form-input" required placeholder="Cth: Budi Santoso / admin_sampah">
                         <div class="text-sm text-muted" style="margin-top: 5px;">*Gunakan Nama Lengkap (Tanpa Pak/Bu)</div>
                     </div>
                     <div class="form-group">
@@ -489,9 +489,9 @@
         // KONFIGURASI API UNTUK VERCEL HOSTING
         // ==========================================
         // PENTING: Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda yang berakhiran "/exec"
-        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxAZF4EU7Xk27r__r5QSiUxLtfodguBbYvmv3iSGKV-HsH0Cj2BpWi2aoX1e7yFlx5OVA/exec";
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxka4pQ_FLO1hcHgiFpo9yFgdHrwX2haw9f_DYvmO33rhx5iIMmGVYVwKiQPJhhIiBwtw/exec";
 
-        if (typeof google === 'undefined' || GAS_API_URL !== "https://script.google.com/macros/s/AKfycbxAZF4EU7Xk27r__r5QSiUxLtfodguBbYvmv3iSGKV-HsH0Cj2BpWi2aoX1e7yFlx5OVA/exec") {
+        if (typeof google === 'undefined' || GAS_API_URL !== "https://script.google.com/macros/s/AKfycbxka4pQ_FLO1hcHgiFpo9yFgdHrwX2haw9f_DYvmO33rhx5iIMmGVYVwKiQPJhhIiBwtw/exec") {
             window.google = {
                 script: {
                     run: {
@@ -514,7 +514,7 @@
             const proxy = {};
             methods.forEach(method => {
                 proxy[method] = function(...args) {
-                    if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbxAZF4EU7Xk27r__r5QSiUxLtfodguBbYvmv3iSGKV-HsH0Cj2BpWi2aoX1e7yFlx5OVA/exec") {
+                    if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbxka4pQ_FLO1hcHgiFpo9yFgdHrwX2haw9f_DYvmO33rhx5iIMmGVYVwKiQPJhhIiBwtw/exec") {
                         onFailure({message: "Mohon masukkan URL API Google Script Anda ke dalam variabel GAS_API_URL di kode HTML."});
                         return;
                     }
