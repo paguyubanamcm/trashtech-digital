@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrashTech - Perumahan</title>
+    <style>
+        :root {
+            --bg-main: #0f172a; --bg-card: rgba(30, 41, 59, 0.7); --border-glass: rgba(255, 255, 255, 0.1);
+            --accent-cyan: #0ea5e9; --accent-blue: #3b82f6; --accent-gold: #fbbf24; --accent-purple: #8b5cf6;
+            --text-main: #f8fafc; --text-muted: #94a3b8;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+        body { background-color: var(--bg-main); background-image: radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.1), transparent 30%), radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1), transparent 30%); color: var(--text-main); min-height: 100vh; font-size: 14px; }
+        .hidden { display: none !important; }
+        .glass-card { background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border-glass); border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+        .text-center { text-align: center; }
+        .text-gradient { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        h1, h2, h3 { margin-bottom: 0.5rem; }
+        .text-sm { font-size: 0.85rem; }
+        .text-muted { color: var(--text-muted); }
+        .text-cyan { color: var(--accent-cyan); }
+        
+        .btn { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue)); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.9rem; }
+        .btn:hover { box-shadow: 0 0 15px rgba(14, 165, 233, 0.4); transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 1px solid var(--border-glass); color: var(--text-main); }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+        .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; border-radius: 6px; }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-success { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--success); }
+        .btn-success:hover { background: var(--success); color: white; }
+
+        .form-group { margin-bottom: 1.2rem; text-align: left; }
+        .form-label { display: block; margin-bottom: 0.4rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        .form-input { width: 100%; padding: 0.6rem 1rem; border-radius: 8px; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border-glass); color: var(--text-main); font-size: 0.9rem; outline: none; transition: 0.3s; }
+        .form-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2); }
+        .form-input:disabled { background: rgba(15, 23, 42, 0.4); color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; opacity: 1; cursor: not-allowed; border-color: rgba(255, 255, 255, 0.2); font-weight: 600; }
+        select.form-input option { background: var(--bg-main); color: var(--text-main); }
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .file-input-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; }
+
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); flex-wrap: wrap; gap: 1rem; }
+        .nav-tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tab-btn { background: transparent; border: 1px solid transparent; color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: 500; }
+        .tab-btn.active { background: rgba(14, 165, 233, 0.1); color: var(--accent-cyan); border-color: rgba(14, 165, 233, 0.3); }
+        .tab-btn:hover:not(.active) { background: rgba(255,255,255,0.05); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { padding: 1.2rem; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .stat-card .value { font-size: 2rem; font-weight: bold; margin-top: 0.5rem; }
+
+        .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-glass); background: var(--bg-card); }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+        th, td { padding: 1rem; border-bottom: 1px solid var(--border-glass); vertical-align: middle; }
+        th { background: rgba(0, 0, 0, 0.2); font-weight: 600; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; white-space: nowrap; }
+        tr:hover { background: rgba(255, 255, 255, 0.03); }
+        
+        .badge { padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-block; white-space: nowrap; }
+        .badge-lunas { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-belum { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-glass); background: #1e293b; }
+        .proof-link { color: var(--accent-cyan); text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; }
+        .proof-link:hover { text-decoration: underline; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
+        .modal-content { width: 100%; max-width: 450px; padding: 1.5rem; max-height: 90vh; overflow-y: auto; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes bounceInfo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-cyan); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #loading-indicator { position: fixed; top: 20px; right: 20px; z-index: 999; padding: 10px 20px; display: flex; align-items: center; gap: 10px; }
+
+        .pengumuman-item { padding: 12px; background: rgba(15, 23, 42, 0.6); border-left: 4px solid var(--accent-cyan); border-radius: 6px; margin-bottom: 12px; transition: 0.3s; }
+        .pengumuman-item:hover { background: rgba(15, 23, 42, 0.9); }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; align-items: flex-start; }
+            .nav-tabs { width: 100%; justify-content: flex-start; overflow-x: auto; padding-bottom: 5px; }
+            h1 { font-size: 2rem; }
+            .hero { padding: 3rem 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Player Tersembunyi untuk Suara Notifikasi/Alarm (SUARA HORN KAPAL) -->
+    <audio id="chime-sound" src="https://www.myinstants.com/media/sounds/ship-horn.mp3" preload="auto"></audio>
+
+    <div id="loading-indicator" class="glass-card hidden">
+        <div class="loader"></div> <span class="text-sm">Memproses API...</span>
+    </div>
+
+    <!-- LANDING & LOGIN PAGE -->
+    <div id="view-landing" class="container">
+        <div class="hero text-center" style="padding-top: 5vh;">
+            <div style="display: inline-block; padding: 0.4rem 1rem; border-radius: 20px; background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.2); color: var(--accent-cyan); font-size: 0.8rem; margin-bottom: 1rem; font-weight: 600;">
+                Sistem Terpadu Iuran Perumahan (Vercel API Mode)
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <img src="https://freedomdigital.biz.id/gambarbebas/20260311-015925_logo_sampahku_03.png" alt="Logo TrashTech" style="width: 140px; height: auto; filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.3));">
+            </div>
+
+            <h1>TrashTech <span class="text-gradient">Manager</span></h1>
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal warga untuk pembayaran iuran bulanan yang transparan, berjalan sangat cepat melalui API Server.</p>
+            
+            <div class="glass-card" style="max-width: 350px; margin: 0 auto; padding: 2rem; animation: fadeIn 0.5s ease;">
+                <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Masuk Sistem</h2>
+                <form id="form-login" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Username / Nama Warga</label>
+                        <input type="text" id="username" class="form-input" required placeholder="Cth: Budi Santoso / admin_sampah">
+                        <div class="text-sm text-muted" style="margin-top: 5px;">*Gunakan Nama Lengkap (Tanpa Pak/Bu)</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-input" required placeholder="••••••••">
+                    </div>
+                    <div id="login-error" class="hidden text-sm" style="color: var(--danger); margin-bottom: 1rem; background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 6px;"></div>
+                    <button type="submit" class="btn" style="width: 100%;">Akses Dashboard</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="view-app" class="container hidden" style="animation: fadeIn 0.4s ease;">
+        
+        <!-- HEADER & NAVIGATION -->
+        <div class="navbar">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="https://freedomdigital.biz.id/gambarbebas/20260311-015925_logo_sampahku_03.png" alt="Logo" style="width: 120px; height: 55px; object-fit: contain;">
+                <div style="width: 1px; height: 35px; background: var(--border-glass); margin: 0 5px;"></div>
+                
+                <img id="nav-avatar" src="" class="avatar hidden" alt="Avatar">
+                <div>
+                    <h2 class="text-gradient" id="nav-title" style="font-size: 1.4rem; margin:0;">Dashboard</h2>
+                    <div class="text-sm text-muted" id="nav-subtitle">Role / Blok</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div class="nav-tabs" id="admin-tabs" style="display: none;">
+                    <button id="admin-tab-tagihan" class="tab-btn active" onclick="switchTab('tab-tagihan', this)">📋 Data & Pengumuman</button>
+                    <button id="admin-tab-warga" class="tab-btn" onclick="switchTab('tab-warga', this)">👥 Manajemen Warga</button>
+                    <button id="admin-tab-profil" class="tab-btn" onclick="switchTab('tab-profil', this)">👤 Profil Saya</button>
+                </div>
+                <div class="nav-tabs" id="warga-tabs" style="display: none;">
+                    <button id="warga-tab-tagihan" class="tab-btn active" onclick="switchTab('tab-tagihan', this)">📋 Info & Tagihan Saya</button>
+                    <button id="warga-tab-profil" class="tab-btn" onclick="switchTab('tab-profil', this)">👤 Profil Saya</button>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="logout()">Keluar</button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 1: PAPAN PENGUMUMAN & TAGIHAN          -->
+        <!-- ========================================== -->
+        <div id="tab-tagihan" class="tab-content">
+            
+            <div class="glass-card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-glass); padding-bottom: 10px; margin-bottom: 15px;">
+                    <h3 style="margin:0; display:flex; align-items:center; gap:8px;"><span style="font-size:1.5rem;">📢</span> Papan Informasi Warga</h3>
+                    <button id="btn-add-pengumuman" class="btn btn-sm hidden" onclick="openModal('modal-add-pengumuman')">+ Buat Pengumuman</button>
+                </div>
+                <div id="pengumuman-container" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                    <p class="text-sm text-muted text-center py-2">Memuat informasi...</p>
+                </div>
+            </div>
+
+            <!-- Stats (Admin Only) -->
+            <div id="admin-stats" class="stats-grid hidden">
+                <div class="stat-card glass-card" style="border-bottom: 3px solid var(--accent-cyan);">
+                    <h3 class="text-sm text-muted">Tarif Iuran/Bulan</h3>
+                    <div class="value" id="stat-tarif" style="color: var(--accent-cyan); font-size: 1.5rem;">Rp 30.000</div>
+                    <button class="btn-outline btn-sm" style="margin-top: 8px; width: 100%;" onclick="openTarifModal()">✏️ Ubah Tarif</button>
+                </div>
+                <div class="stat-card glass-card">
+                    <h3 class="text-sm text-muted">Total Tagihan</h3>
+                    <div class="value" id="stat-total">0</div>
+                </div>
+                <div class="stat-card glass-card" style="border-bottom: 3px solid var(--warning);">
+                    <h3 class="text-sm text-muted">Perlu Validasi</h3>
+                    <div class="value" id="stat-validasi" style="color: var(--warning)">0</div>
+                </div>
+                <div class="stat-card glass-card" style="border-bottom: 3px solid var(--success);">
+                    <h3 class="text-sm text-muted">Sudah Lunas</h3>
+                    <div class="value" id="stat-lunas" style="color: var(--success)">0</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 10px; gap: 10px;" id="admin-setup-wrapper" class="hidden">
+                <button class="btn btn-outline btn-sm" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="generateTagihanMasal()">🔄 Buat Tagihan Warga Bulan Ini</button>
+                <button class="btn btn-warning btn-sm" id="btn-setup-db" onclick="setupDB()">🛠️ Setup DB Awal</button>
+            </div>
+
+            <div class="table-wrapper glass-card">
+                <table id="tagihan-table">
+                    <thead>
+                        <tr id="tagihan-header">
+                            <!-- Injected by JS -->
+                        </tr>
+                    </thead>
+                    <tbody id="tagihan-body">
+                        <!-- Data here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: MANAJEMEN WARGA (ADMIN ONLY)        -->
+        <!-- ========================================== -->
+        <div id="tab-warga" class="tab-content hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3>Daftar Penghuni / Warga</h3>
+                <button class="btn btn-sm" onclick="openWargaModal()">+ Tambah Warga Baru</button>
+            </div>
+            <div class="table-wrapper glass-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Foto</th>
+                            <th>Nama & Akses</th>
+                            <th>Blok / Alamat</th>
+                            <th>WhatsApp</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="warga-body">
+                        <!-- Data here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: PROFIL SAYA (ADMIN & WARGA)         -->
+        <!-- ========================================== -->
+        <div id="tab-profil" class="tab-content hidden">
+            <div class="glass-card" style="max-width: 500px; margin: 0 auto; padding: 2rem;">
+                <h3 class="text-center" style="margin-bottom: 1.5rem;">Edit Profil Saya</h3>
+                <div class="text-center" style="margin-bottom: 1.5rem;">
+                    <img id="profil-preview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" class="avatar" style="width: 80px; height: 80px; margin-bottom: 10px;" alt="Foto Profil">
+                </div>
+                <form onsubmit="submitProfil(event)">
+                    <div class="form-group">
+                        <label class="form-label">Upload Foto Baru (Opsional)</label>
+                        <div class="file-input-wrapper btn btn-outline" style="width: 100%; text-align: center;">
+                            <span id="profil-file-label">Pilih Gambar...</span>
+                            <input type="file" id="profil-file" accept="image/*" onchange="updateFileLabel('profil-file', 'profil-file-label')">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="profil-warga-name-group">
+                        <label class="form-label">Sapaan & Nama Lengkap (Username)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="profil-sapaan" class="form-input" style="width: 100px;" disabled>
+                                <option value="Pak.">Pak.</option>
+                                <option value="Bu.">Bu.</option>
+                                <option value="">-</option>
+                            </select>
+                            <input type="text" id="profil-nama-asli" class="form-input" required disabled>
+                        </div>
+                        <div class="text-sm text-warning" style="margin-top: 8px;">
+                            🔒 <i>Identitas warga hanya dapat diubah oleh Pengurus.</i>
+                        </div>
+                    </div>
+
+                    <div class="form-group hidden" id="profil-admin-name-group">
+                        <label class="form-label">Nama / Username Login</label>
+                        <input type="text" id="profil-nama-admin" class="form-input" required>
+                        <div class="text-sm text-muted" style="margin-top: 8px;">
+                            <i>Sebagai pengurus, Anda bebas mengganti username Anda sendiri.</i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password Baru (Kosongkan jika tidak diubah)</label>
+                        <input type="password" id="profil-password" class="form-input" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">No WhatsApp (Awalan 62)</label>
+                        <input type="number" id="profil-wa" class="form-input" required placeholder="62812xxx">
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Simpan Perubahan</button>
+                </form>
+            </div>
+            
+            <div id="profil-quick-bayar" class="glass-card" style="max-width: 500px; margin: 1.5rem auto 0 auto; padding: 2rem; text-align: center; border: 1px solid rgba(14, 165, 233, 0.3); background: rgba(14, 165, 233, 0.05);">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🧾</div>
+                <h3 style="margin-bottom: 0.5rem;">Upload Struk Cepat</h3>
+                <p class="text-sm text-muted" style="margin-bottom: 1.5rem;">Fasilitas cepat untuk melampirkan bukti transfer kas/iuran Anda.</p>
+                <button class="btn" style="width: 100%;" onclick="openQuickBayar()">📸 Kirim Bukti Bayar Sekarang</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODALS AREA                                -->
+    <!-- ========================================== -->
+
+    <div id="modal-notif-pengumuman" class="modal-overlay hidden" style="z-index: 105;">
+        <div class="glass-card modal-content text-center" style="border: 2px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(14, 165, 233, 0.3);">
+            <div style="font-size: 4rem; margin-bottom: 10px; animation: bounceInfo 1s infinite;">📢</div>
+            <h2 class="text-gradient">Informasi Baru!</h2>
+            <p class="text-main" style="margin-bottom: 5px; font-size: 1.05rem;">Ada pengumuman baru dari Admin:</p>
+            <strong id="notif-judul" style="display:block; margin-bottom:15px; color: var(--accent-gold); font-size: 1.2rem;">...</strong>
+            <button class="btn" style="width: 100%;" onclick="closeModal('modal-notif-pengumuman')">Baik, Saya Mengerti</button>
+        </div>
+    </div>
+
+    <div id="modal-reminder" class="modal-overlay hidden" style="z-index: 100;">
+        <div class="glass-card modal-content text-center" style="border: 2px solid var(--warning); box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
+            <div style="font-size: 4rem; margin-bottom: 10px; animation: pulse 2s infinite;">⏰</div>
+            <h2 class="text-gradient" style="background: linear-gradient(90deg, var(--warning), #ea580c); -webkit-background-clip: text;">Pemberitahuan Tagihan</h2>
+            <p class="text-main" style="margin-bottom: 15px; font-size: 1.1rem; line-height: 1.6;">
+                Silahkan <strong id="reminder-sapaan-nama" style="color: var(--accent-cyan);">...</strong>, 
+                untuk selesaikan pembayaran bulan berikutnya (<strong id="reminder-month" style="color: var(--accent-gold);">...</strong>).
+            </p>
+            <p class="text-sm text-muted" style="margin-bottom: 1.5rem;">Terima kasih atas partisipasi Anda dalam menjaga kebersihan lingkungan.</p>
+            <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
+                <button class="btn-outline btn-sm" style="flex:1; border-color:var(--text-muted);" onclick="closeModal('modal-reminder')">Nanti</button>
+                <button class="btn" style="flex:2; background: linear-gradient(90deg, #f59e0b, #d97706);" onclick="closeModal('modal-reminder'); openQuickBayar();">Bayar Sekarang</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-tarif" class="modal-overlay hidden">
+        <div class="glass-card modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Ubah Tarif Iuran Bulanan</h3>
+                <button class="btn-outline btn-sm" style="border:none;" onclick="closeModal('modal-tarif')">✕</button>
+            </div>
+            <form onsubmit="submitTarif(event)">
+                <div class="form-group">
+                    <label class="form-label">Nominal Tarif per Bulan (Rp)</label>
+                    <input type="number" id="tarif-nominal-input" class="form-input" required placeholder="Contoh: 30000">
+                </div>
+                <div class="text-sm text-muted" style="margin-bottom: 1rem;">Perubahan ini akan otomatis menyesuaikan kalkulator perhitungan saat warga akan membayar.</div>
+                <button type="submit" class="btn" style="width: 100%;">Simpan Tarif Baru</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-add-pengumuman" class="modal-overlay hidden">
+        <div class="glass-card modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Buat Pengumuman Baru</h3>
+                <button class="btn-outline btn-sm" style="border:none;" onclick="closeModal('modal-add-pengumuman')">✕</button>
+            </div>
+            <form onsubmit="submitPengumuman(event)">
+                <div class="form-group">
+                    <label class="form-label">Judul Pengumuman</label>
+                    <input type="text" id="info-judul" class="form-input" required placeholder="Contoh: Info Kerja Bakti">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Isi / Detail Informasi</label>
+                    <textarea id="info-isi" class="form-input" required rows="4" placeholder="Tulis rincian informasi di sini..."></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Publikasikan Sekarang</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-bayar" class="modal-overlay hidden" style="z-index: 110;">
+        <div class="glass-card modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Konfirmasi Pembayaran</h3>
+                <button class="btn-outline btn-sm" style="border:none;" onclick="closeModal('modal-bayar')">✕</button>
+            </div>
+            <form onsubmit="submitPayment(event)">
+                <input type="hidden" id="bayar-row-idx">
+                <div class="form-group">
+                    <label class="form-label">Tanggal Transfer</label>
+                    <input type="date" id="bayar-tanggal" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bulan yang Dibayar</label>
+                    <input type="text" id="bayar-bulan" class="form-input" required placeholder="Contoh: Jan, Feb, Mrt" onkeyup="autoCalcNominal()">
+                    <span class="text-sm text-muted" style="color: var(--accent-gold);">Ketik beberapa bulan sekaligus dengan tanda koma (,) jika ingin bayar lunas di muka.</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Total Nominal Transfer (Rp)</label>
+                    <input type="number" id="bayar-nominal" class="form-input" required placeholder="Contoh: 30000">
+                    <div class="text-sm text-cyan" id="bayar-tarif-info" style="margin-top: 5px; font-weight:600;">Tarif Iuran: Rp 30.000 / bulan</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Upload Bukti Transfer</label>
+                    <div class="file-input-wrapper btn btn-outline" style="width: 100%; text-align: center;">
+                        <span id="bayar-file-label">📸 Pilih Foto Struk...</span>
+                        <input type="file" id="bayar-file" accept="image/*" required onchange="updateFileLabel('bayar-file', 'bayar-file-label')">
+                    </div>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Kirim untuk Divalidasi</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-warga" class="modal-overlay hidden">
+        <div class="glass-card modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 id="warga-modal-title">Tambah Warga</h3>
+                <button class="btn-outline btn-sm" style="border:none;" onclick="closeModal('modal-warga')">✕</button>
+            </div>
+            <form onsubmit="saveWarga(event)">
+                <input type="hidden" id="warga-old-nama">
+                
+                <div class="form-group hidden" id="warga-role-group">
+                    <label class="form-label" style="color: var(--accent-gold);">👑 Hak Akses (Khusus Superadmin)</label>
+                    <select id="warga-role" class="form-input" style="border-color: var(--accent-gold);">
+                        <option value="Warga">Warga Biasa</option>
+                        <option value="Admin">Admin Pengelola</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sapaan & Nama Lengkap (Username)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="warga-sapaan" class="form-input" style="width: 100px;">
+                            <option value="Pak.">Pak.</option>
+                            <option value="Bu.">Bu.</option>
+                            <option value="">-</option>
+                        </select>
+                        <input type="text" id="warga-nama-asli" class="form-input" required placeholder="Nama Lengkap">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password Akses Warga</label>
+                    <input type="text" id="warga-password" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Blok & No. Rumah / Alamat</label>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="warga-blok-select" class="form-input" style="width: 130px;">
+                            <option value="AMC 1">AMC 1</option>
+                            <option value="AMC 2">AMC 2</option>
+                            <option value="Kantor">Kantor</option>
+                        </select>
+                        <input type="text" id="warga-norumah" class="form-input" required placeholder="Cth: Blok A No. 12">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">No WhatsApp</label>
+                    <input type="number" id="warga-wa" class="form-input" required placeholder="62812...">
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Simpan Data</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-preview" class="modal-overlay hidden">
+        <div class="glass-card modal-content" style="max-width: 500px; text-align: center; padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0;">Arsip Bukti Pembayaran</h3>
+                <button class="btn-outline btn-sm" style="border:none;" onclick="closeModal('modal-preview')">✕</button>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 1rem;">
+                <img id="preview-image-element" src="" style="max-width: 100%; max-height: 60vh; border-radius: 6px; object-fit: contain;">
+            </div>
+            <a id="download-struk-btn" href="#" download="Struk_Iuran.jpg" class="btn" style="width: 100%;">⬇️ Download Struk Ini</a>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC & API PROXY (UNTUK VERCEL) -->
+    <script>
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        let currentUser = null, currentRole = null, currentName = null, currentBlok = null, currentWa = null, currentFoto = null, currentSapaan = "";
+        let currentWargaRowIdx = null, currentWargaBulan = null; 
+        let currentWargaBulanLunas = "-"; 
+        let globalTarifIuran = 30000; 
+
+        // ==========================================
+        // KONFIGURASI API UNTUK VERCEL HOSTING
+        // ==========================================
+        // PENTING: Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda yang berakhiran "/exec"
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxdg9fOAJZsFMYuH2TZ8DScyyhhILtUNSukxx5bGL3mQiAgBOkawUjmgSE1favZWaFh4A/exec";
+
+        // Proxy yang mengubah sistem Google Script lokal menjadi sistem Web API fetch murni
+        if (typeof google === 'undefined' || GAS_API_URL !== "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI") {
+            window.google = {
+                script: {
+                    run: {
+                        withSuccessHandler: function(onSuccess) {
+                            return {
+                                withFailureHandler: function(onFailure) { return createApiProxy(onSuccess, onFailure); },
+                                ...createApiProxy(onSuccess, err => {
+                                    hideLoading(); 
+                                    alert("API Error: " + err.message + "\n\nPastikan URL Google Apps Script sudah dimasukkan di bagian bawah kode!");
+                                })
+                            };
+                        }
+                    }
+                }
+            };
+        }
+
+        function createApiProxy(onSuccess, onFailure) {
+            const methods = ['verifyLogin', 'setupDatabase', 'getPengaturan', 'savePengaturan', 'getPengumuman', 'savePengumuman', 'deletePengumuman', 'getDashboardData', 'getAllWarga', 'saveWarga', 'deleteWarga', 'submitPayment', 'validatePayment', 'updateMyProfile', 'generateTagihanOtomatis'];
+            const proxy = {};
+            methods.forEach(method => {
+                proxy[method] = function(...args) {
+                    if (GAS_API_URL === "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI") {
+                        onFailure({message: "Mohon masukkan URL API Google Script Anda ke dalam variabel GAS_API_URL di kode HTML."});
+                        return;
+                    }
+                    
+                    fetch(GAS_API_URL, {
+                        method: 'POST',
+                        // Mengirimkan request ke Apps Script layaknya REST API
+                        body: JSON.stringify({ action: method, args: args })
+                    })
+                    .then(res => res.json())
+                    .then(data => onSuccess(data))
+                    .catch(err => onFailure(err));
+                };
+            });
+            return proxy;
+        }
+
+        // ==========================================
+        // FUNGSI UMUM & UI
+        // ==========================================
+        function playChimeSound() {
+            const audio = document.getElementById('chime-sound');
+            if (audio) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio diblokir oleh browser karena kebijakan Autoplay.", e));
+            }
+        }
+
+        function showLoading() { document.getElementById('loading-indicator').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loading-indicator').classList.add('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        
+        function updateFileLabel(inputId, labelId) {
+            const file = document.getElementById(inputId).files[0];
+            document.getElementById(labelId).innerText = file ? file.name : "Pilih File...";
+            if(inputId === 'profil-file' && file) {
+                const reader = new FileReader();
+                reader.onload = function(e) { document.getElementById('profil-preview').src = e.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function switchTab(tabId, btnEl) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            const parent = btnEl.parentElement;
+            parent.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnEl.classList.add('active');
+
+            if(tabId === 'tab-tagihan') { loadTagihan(); loadPengumuman(); }
+            if(tabId === 'tab-warga') loadWargaAdmin();
+            if(tabId === 'tab-profil') loadProfilForm();
+        }
+
+        function getBase64(file, callback) {
+            if(!file) { callback(null, null); return; }
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => callback(reader.result, file.name);
+            reader.onerror = error => { alert("Gagal membaca file!"); hideLoading(); };
+        }
+
+        function openPreviewStruk(imageUrl) {
+            document.getElementById('preview-image-element').src = imageUrl;
+            document.getElementById('download-struk-btn').href = imageUrl;
+            openModal('modal-preview');
+        }
+
+        function calculateNextDueMonth(bulanLunasStr) {
+            const formal = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const shortForm = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+
+            if (!bulanLunasStr || bulanLunasStr === "-") {
+                const d = new Date(); d.setMonth(d.getMonth() + 1); 
+                return { formal: formal[d.getMonth()], short: shortForm[d.getMonth()] };
+            }
+
+            const parts = bulanLunasStr.split(/[, \-]/).map(x => x.trim()).filter(x => x.length >= 3);
+            if (parts.length === 0) {
+                const d = new Date(); d.setMonth(d.getMonth() + 1);
+                return { formal: formal[d.getMonth()], short: shortForm[d.getMonth()] };
+            }
+
+            const lastPart = parts[parts.length - 1].toLowerCase().substring(0,3);
+            const map = {
+                "jan": 0, "feb": 1, "mar": 2, "mrt": 2, "apr": 3, "mei": 4, "jun": 5,
+                "jul": 6, "ags": 7, "agu": 7, "sep": 8, "okt": 9, "nov": 10, "des": 11
+            };
+
+            if (map[lastPart] !== undefined) {
+                let nextIdx = (map[lastPart] + 1) % 12;
+                return { formal: formal[nextIdx], short: shortForm[nextIdx] };
+            }
+
+            const d = new Date(); d.setMonth(d.getMonth() + 1);
+            return { formal: formal[d.getMonth()], short: shortForm[d.getMonth()] };
+        }
+
+        // ==========================================
+        // AUTHENTICATION & INITIAL LOAD
+        // ==========================================
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
+            showLoading(); document.getElementById('login-error').classList.add('hidden');
+
+            google.script.run
+            .withSuccessHandler(function(res) {
+                hideLoading();
+                if(res.success) {
+                    currentUser = res.username; currentRole = res.role; 
+                    currentName = res.nama; currentBlok = res.blok; currentWa = res.wa; currentFoto = res.foto;
+                    currentSapaan = res.sapaan || ""; 
+                    
+                    document.getElementById('view-landing').classList.add('hidden');
+                    document.getElementById('view-app').classList.remove('hidden');
+                    
+                    const namaAman = String(currentName || "Warga");
+                    const shortName = namaAman.split(' ').slice(0, 2).join(' ');
+                    
+                    document.getElementById('nav-title').innerText = `Halo, ${currentSapaan} ${shortName}`.trim();
+                    document.getElementById('nav-subtitle').innerText = currentRole === 'Warga' ? currentBlok : `Akses: ${currentRole}`;
+                    
+                    const avatarEl = document.getElementById('nav-avatar');
+                    if(currentFoto && currentFoto !== "-") { avatarEl.src = currentFoto; avatarEl.classList.remove('hidden'); }
+
+                    if(currentRole === 'Admin' || currentRole === 'Superadmin') {
+                        document.getElementById('admin-tabs').style.display = 'flex';
+                        document.getElementById('warga-tabs').style.display = 'none';
+                        document.getElementById('admin-stats').classList.remove('hidden');
+                        document.getElementById('btn-setup-db').classList.remove('hidden'); 
+                        document.getElementById('btn-add-pengumuman').classList.remove('hidden');
+                        setupTagihanHeader(true);
+                    } else {
+                        document.getElementById('warga-tabs').style.display = 'flex';
+                        document.getElementById('admin-tabs').style.display = 'none';
+                        document.getElementById('admin-stats').classList.add('hidden');
+                        document.getElementById('btn-add-pengumuman').classList.add('hidden');
+                        setupTagihanHeader(false);
+                    }
+                    
+                    loadPengaturanGlobal();
+                    loadPengumuman();
+                    loadTagihan(); 
+
+                } else {
+                    document.getElementById('login-error').innerText = res.message; 
+                    document.getElementById('login-error').classList.remove('hidden');
+                }
+            })
+            .withFailureHandler(err => {
+                hideLoading();
+                document.getElementById('login-error').innerText = err.message || "Gagal terhubung ke Server.";
+                document.getElementById('login-error').classList.remove('hidden');
+            })
+            .verifyLogin(u, p);
+        }
+
+        function logout() {
+            document.getElementById('username').value = ''; document.getElementById('password').value = '';
+            document.getElementById('view-app').classList.add('hidden');
+            document.getElementById('view-landing').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // PENGATURAN TARIF LOGIC
+        // ==========================================
+        function loadPengaturanGlobal() {
+            google.script.run
+            .withSuccessHandler(res => {
+                globalTarifIuran = parseInt(res.tarif) || 30000;
+                const statTarif = document.getElementById('stat-tarif');
+                if (statTarif) statTarif.innerText = 'Rp ' + Number(globalTarifIuran).toLocaleString('id-ID');
+                const infoTarif = document.getElementById('bayar-tarif-info');
+                if (infoTarif) infoTarif.innerText = 'Tarif Iuran: Rp ' + Number(globalTarifIuran).toLocaleString('id-ID') + ' / bulan';
+            }).getPengaturan();
+        }
+
+        function openTarifModal() {
+            document.getElementById('tarif-nominal-input').value = globalTarifIuran;
+            openModal('modal-tarif');
+        }
+
+        function submitTarif(e) {
+            e.preventDefault();
+            const val = document.getElementById('tarif-nominal-input').value;
+            closeModal('modal-tarif'); showLoading();
+            google.script.run.withSuccessHandler(res => {
+                hideLoading();
+                if(res.success) {
+                    alert("Tarif Iuran berhasil diperbarui!");
+                    loadPengaturanGlobal(); 
+                } else alert(res.message);
+            }).savePengaturan(val);
+        }
+
+        function autoCalcNominal() {
+            const bln = document.getElementById('bayar-bulan').value;
+            const inputNominal = document.getElementById('bayar-nominal');
+            if(!bln.trim()) { inputNominal.value = ''; return; }
+            const count = bln.split(',').filter(x => x.trim() !== '').length;
+            inputNominal.value = count * globalTarifIuran;
+        }
+
+        // ==========================================
+        // PAPAN PENGUMUMAN LOGIC
+        // ==========================================
+        function loadPengumuman() {
+            google.script.run
+            .withSuccessHandler(data => {
+                const container = document.getElementById('pengumuman-container');
+                container.innerHTML = '';
+                if(data.length === 0) {
+                    container.innerHTML = `<p class="text-sm text-muted text-center py-2">Belum ada informasi terbaru.</p>`;
+                    return;
+                }
+                const isAdmin = (currentRole === 'Admin' || currentRole === 'Superadmin');
+                
+                data.forEach(p => {
+                    let hapusBtn = isAdmin ? `<button class="btn-outline btn-sm text-danger" style="border:none;" onclick="hapusPengumuman('${p.id}')">🗑️ Hapus</button>` : '';
+                    container.innerHTML += `
+                        <div class="pengumuman-item">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <span class="text-sm text-muted">🗓️ ${p.tanggal}</span>
+                                ${hapusBtn}
+                            </div>
+                            <strong style="color: var(--accent-cyan); display:block; margin-bottom:5px; font-size:1.05rem;">${p.judul}</strong>
+                            <p style="color: var(--text-main); font-size: 0.9rem; line-height: 1.4;">${p.isi}</p>
+                        </div>
+                    `;
+                });
+
+                if (data.length > 0) {
+                    const latestId = data[0].id.toString();
+                    const lastSeenId = localStorage.getItem('last_seen_info_' + currentName);
+                    
+                    if (lastSeenId !== latestId) {
+                        document.getElementById('notif-judul').innerText = data[0].judul;
+                        setTimeout(() => {
+                            openModal('modal-notif-pengumuman');
+                            playChimeSound();
+                        }, 800);
+                        localStorage.setItem('last_seen_info_' + currentName, latestId);
+                    }
+                }
+            })
+            .withFailureHandler(err => console.log("Gagal memuat pengumuman: " + err.message))
+            .getPengumuman();
+        }
+
+        function openPengumumanModal() {
+            document.getElementById('info-judul').value = '';
+            document.getElementById('info-isi').value = '';
+            openModal('modal-add-pengumuman');
+        }
+
+        function submitPengumuman(e) {
+            e.preventDefault();
+            const j = document.getElementById('info-judul').value;
+            const i = document.getElementById('info-isi').value;
+            closeModal('modal-add-pengumuman'); showLoading();
+            google.script.run.withSuccessHandler(res => {
+                hideLoading();
+                if(res.success) {
+                    localStorage.setItem('last_seen_info_' + currentName, Date.now().toString()); 
+                    loadPengumuman();
+                } else alert(res.message);
+            }).savePengumuman(j, i);
+        }
+
+        function hapusPengumuman(id) {
+            if(!confirm("Hapus pengumuman ini?")) return;
+            showLoading();
+            google.script.run.withSuccessHandler(res => {
+                hideLoading();
+                if(res.success) loadPengumuman();
+                else alert(res.message);
+            }).deletePengumuman(id);
+        }
+
+        // ==========================================
+        // TAB 1: TAGIHAN & VALIDASI
+        // ==========================================
+        function setupTagihanHeader(isAdmin) {
+            const tr = document.getElementById('tagihan-header');
+            if(isAdmin) tr.innerHTML = `<th>Warga & Kontak</th><th>Bulan Dibayar</th><th>Nominal</th><th>Bukti Transfer</th><th>Status</th><th>Aksi Validasi</th>`;
+            else tr.innerHTML = `<th>Periode Tagihan</th><th>Bulan Lunas</th><th>Nominal</th><th>Status</th><th>Aksi / Arsip Bukti</th>`;
+        }
+
+        function setupDB() {
+            if(!confirm("Aksi ini akan men-generate ulang database (V6.0). Lanjutkan?")) return;
+            showLoading();
+            google.script.run.withSuccessHandler(res => { hideLoading(); alert(res.message); loadTagihan(); loadPengumuman(); loadPengaturanGlobal(); }).setupDatabase();
+        }
+
+        function generateTagihanMasal() {
+            if(!confirm("Sistem akan memindai warga dan menerbitkan tagihan bulan ini secara massal. Lanjutkan?")) return;
+            showLoading();
+            google.script.run.withSuccessHandler(res => { hideLoading(); alert(res.message); loadTagihan(); }).generateTagihanOtomatis();
+        }
+
+        function loadTagihan() {
+            showLoading();
+            google.script.run
+            .withSuccessHandler(data => {
+                hideLoading();
+                const tbody = document.getElementById('tagihan-body'); tbody.innerHTML = '';
+                const isAdmin = (currentRole === 'Admin' || currentRole === 'Superadmin');
+                let cTotal = data.length, cValidasi = 0, cLunas = 0, hasUnpaid = false;
+
+                if(data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Database Kosong. Hubungi Superadmin.</td></tr>`;
+                    if(isAdmin) document.getElementById('admin-setup-wrapper').classList.remove('hidden');
+                    return;
+                }
+                if(isAdmin) document.getElementById('admin-setup-wrapper').classList.add('hidden');
+
+                const myRow = data.find(d => d.nama === currentName);
+                if (myRow) {
+                    currentWargaRowIdx = myRow.rowIdx; 
+                    currentWargaBulan = myRow.bulan;
+                    currentWargaBulanLunas = myRow.bulanLunas; 
+                }
+
+                data.forEach(item => {
+                    if(item.status === 'Lunas') cLunas++;
+                    if(item.status === 'Menunggu Validasi') cValidasi++;
+                    if(item.status === 'Belum Lunas' || item.status === 'Ditolak') {
+                        if (item.nama === currentName) hasUnpaid = true;
+                    }
+
+                    let badgeClass = 'badge-belum';
+                    if(item.status === 'Lunas') badgeClass = 'badge-lunas';
+                    if(item.status === 'Menunggu Validasi') badgeClass = 'badge-warning';
+
+                    let btnLihatBukti = item.bukti !== "-" ? `<button class="btn btn-sm btn-outline" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="openPreviewStruk('${item.bukti}')">🖼️ Lihat Arsip Struk</button>` : `<span class="text-sm text-muted">Belum ada struk</span>`;
+                    const tr = document.createElement('tr');
+                    
+                    if(isAdmin) {
+                        let actionHtml = '-';
+                        if(item.status === 'Menunggu Validasi') {
+                            actionHtml = `<div style="display:flex; gap:5px;"><button class="btn btn-sm btn-success" onclick="validasi(${item.rowIdx}, true)">Terima</button><button class="btn btn-sm btn-danger" onclick="validasi(${item.rowIdx}, false)">Tolak</button></div>`;
+                        } else if(item.status === 'Belum Lunas') {
+                            actionHtml = `<span class="text-sm text-muted">Menunggu Transfer</span>`;
+                        } else if(item.status === 'Ditolak') {
+                            actionHtml = `<span class="text-sm text-danger">Ditolak</span>`;
+                        } else {
+                            actionHtml = `<span class="text-sm text-success">✓ Selesai</span>`;
+                        }
+
+                        tr.innerHTML = `
+                            <td><div style="font-weight:600;">${item.nama}</div><div class="text-sm text-muted">${item.blok} | <a href="https://wa.me/${item.wa}" class="proof-link">WA</a></div></td>
+                            <td>${item.bulanLunas !== "-" ? `<strong>${item.bulanLunas}</strong><br><small>${item.tanggal}</small>` : '-'}</td>
+                            <td>${item.nominal !== "-" ? 'Rp ' + Number(item.nominal).toLocaleString('id-ID') : '-'}</td>
+                            <td>${btnLihatBukti}</td>
+                            <td><span class="badge ${badgeClass}">${item.status}</span></td>
+                            <td>${actionHtml}</td>
+                        `;
+                    } else {
+                        let actionHtml = '';
+                        if(item.status === 'Belum Lunas' || item.status === 'Ditolak') {
+                            actionHtml += `<button class="btn btn-sm" style="margin-bottom: 5px; width:100%;" onclick="openBayarModal(${item.rowIdx}, '${item.bulan}')">Upload Bukti Transfer</button><br>`;
+                        } else if(item.status === 'Menunggu Validasi') {
+                            actionHtml += `<div class="text-sm text-warning" style="margin-bottom:5px;">⏳ Menunggu Konfirmasi Admin</div>`;
+                        } else {
+                            actionHtml += `<div class="text-sm text-success" style="margin-bottom:5px;">✓ Tagihan Terbayar</div>`;
+                            actionHtml += `<button class="btn btn-sm btn-outline" style="margin-bottom: 5px; width:100%; border-color: var(--accent-gold); color: var(--accent-gold);" onclick="openBayarModal(${item.rowIdx}, '${item.bulan}')">⚡ Bayar Di Muka / Berikutnya</button><br>`;
+                        }
+
+                        if(item.bukti !== "-") actionHtml += `<button class="btn btn-sm btn-outline" style="width:100%;" onclick="openPreviewStruk('${item.bukti}')">🖼️ Lihat Struk Disimpan</button>`;
+
+                        tr.innerHTML = `
+                            <td><strong>${item.bulan}</strong></td>
+                            <td>${item.bulanLunas !== "-" ? item.bulanLunas : '-'}</td>
+                            <td>${item.nominal !== "-" ? 'Rp ' + Number(item.nominal).toLocaleString('id-ID') : '-'}</td>
+                            <td><span class="badge ${badgeClass}">${item.status}</span></td>
+                            <td>${actionHtml}</td>
+                        `;
+                    }
+                    tbody.appendChild(tr);
+                });
+
+                if(isAdmin) {
+                    document.getElementById('stat-total').innerText = cTotal;
+                    document.getElementById('stat-validasi').innerText = cValidasi;
+                    document.getElementById('stat-lunas').innerText = cLunas;
+                }
+                
+                const today = new Date();
+                const tglHariIni = today.getDate();
+                
+                // NOTIFIKASI PINTAR (3 HARI - Tgl 25, 26, 27)
+                if (tglHariIni >= 25 && tglHariIni <= 27 && hasUnpaid && currentRole === 'Warga') { 
+                    const nextMonthObj = calculateNextDueMonth(currentWargaBulanLunas);
+                    
+                    const sapaanNamaEl = document.getElementById('reminder-sapaan-nama');
+                    let namaAman = String(currentName || "");
+                    let namaPanggilan = currentSapaan ? currentSapaan + " " + namaAman : namaAman;
+                    if(sapaanNamaEl) sapaanNamaEl.innerText = namaPanggilan;
+                    
+                    const monthEl = document.getElementById('reminder-month');
+                    if(monthEl) monthEl.innerText = nextMonthObj.formal;
+                    
+                    if (!sessionStorage.getItem('reminder_tagihan_v60_' + currentName)) {
+                        setTimeout(() => {
+                            openModal('modal-reminder'); 
+                            playChimeSound(); 
+                        }, 300);
+                        sessionStorage.setItem('reminder_tagihan_v60_' + currentName, 'true');
+                    }
+                }
+                
+            })
+            .withFailureHandler(err => {
+                hideLoading();
+                alert("Gagal memuat Data Tagihan: " + (err.message || err.toString()));
+            })
+            .getDashboardData(currentRole, currentUser);
+        }
+
+        function openBayarModal(rowIdx, bulan) {
+            document.getElementById('bayar-row-idx').value = rowIdx; 
+            document.getElementById('bayar-tanggal').value = todayStr;
+            document.getElementById('bayar-file').value = ''; 
+            document.getElementById('bayar-file-label').innerText = "📸 Pilih Foto Struk...";
+            
+            const nextMonthObj = calculateNextDueMonth(currentWargaBulanLunas);
+            document.getElementById('bayar-bulan').value = nextMonthObj.short;
+            
+            document.getElementById('bayar-nominal').value = globalTarifIuran; 
+            openModal('modal-bayar');
+        }
+
+        function openQuickBayar() {
+            if(currentWargaRowIdx) openBayarModal(currentWargaRowIdx, currentWargaBulan);
+            else alert("Data tagihan Anda tidak ditemukan di sistem. Harap hubungi Admin.");
+        }
+
+        function submitPayment(e) {
+            e.preventDefault();
+            const rIdx = document.getElementById('bayar-row-idx').value; const tgl = document.getElementById('bayar-tanggal').value;
+            const bln = document.getElementById('bayar-bulan').value; const nom = document.getElementById('bayar-nominal').value;
+            const file = document.getElementById('bayar-file').files[0];
+            closeModal('modal-bayar'); showLoading();
+            getBase64(file, function(base64Data, filename) {
+                google.script.run.withSuccessHandler(res => {
+                    if(res.success) { alert("Bukti Transfer Terkirim!"); loadTagihan(); document.querySelector('button[onclick="switchTab(\\\'tab-tagihan\\\', this)"]').click(); }
+                    else { hideLoading(); alert("Gagal: " + res.message); }
+                }).submitPayment(rIdx, tgl, nom, bln, base64Data, filename);
+            });
+        }
+
+        function validasi(rowIdx, isTerima) {
+            if(!confirm(`Anda yakin ingin ${isTerima ? 'MENERIMA' : 'MENOLAK'} pembayaran ini?`)) return;
+            showLoading();
+            google.script.run.withSuccessHandler(res => { if(res.success) loadTagihan(); else { hideLoading(); alert("Gagal: " + res.message); } }).validatePayment(rowIdx, isTerima);
+        }
+
+        // ==========================================
+        // TAB 2 & 3: MANAJEMEN WARGA & PROFIL
+        // ==========================================
+        function loadWargaAdmin() {
+            showLoading();
+            google.script.run
+            .withSuccessHandler(data => {
+                hideLoading(); const tbody = document.getElementById('warga-body'); tbody.innerHTML = '';
+                if(data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center">Belum ada data warga.</td></tr>`; return; }
+                data.forEach(u => {
+                    const fallbackIcon = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>`;
+                    const avatar = `<img src="${(u.foto && u.foto !== "-") ? u.foto : fallbackIcon}" class="avatar">`;
+                    
+                    const roleBadge = u.role === 'Admin' ? `<span class="badge badge-warning" style="margin-top:4px;">🛡️ Pengurus</span>` : `<span class="badge badge-lunas" style="margin-top:4px;">🏠 Warga</span>`;
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${avatar}</td>
+                        <td><strong>${u.sapaan ? u.sapaan + ' ' : ''}${u.nama}</strong><br>${roleBadge}</td>
+                        <td>${u.blok}</td><td><a href="https://wa.me/${u.wa}" target="_blank" class="proof-link">${u.wa}</a></td>
+                        <td><button class="btn btn-sm btn-outline" onclick='openWargaModal(${JSON.stringify(u)})'>✏️ Edit</button> <button class="btn btn-sm btn-danger" onclick="hapusWarga('${u.nama}')">🗑️</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .withFailureHandler(err => {
+                hideLoading();
+                alert("Gagal memuat Manajemen Warga: " + (err.message || err.toString()));
+            })
+            .getAllWarga(currentRole); 
+        }
+
+        function openWargaModal(data = null) {
+            if (currentRole === "Superadmin") document.getElementById('warga-role-group').classList.remove('hidden');
+            else document.getElementById('warga-role-group').classList.add('hidden');
+
+            if(data) {
+                document.getElementById('warga-modal-title').innerText = "Edit Data Warga"; document.getElementById('warga-old-nama').value = data.nama;
+                
+                document.getElementById('warga-role').value = data.role || "Warga";
+                
+                let sapaan = data.sapaan || "";
+                let namaAsli = String(data.nama || "");
+
+                if (!sapaan) {
+                    if (namaAsli.toLowerCase().startsWith("pak. ")) { sapaan = "Pak."; namaAsli = namaAsli.replace(/^pak\.\s/i, ''); } 
+                    else if (namaAsli.toLowerCase().startsWith("bu. ")) { sapaan = "Bu."; namaAsli = namaAsli.replace(/^bu\.\s/i, ''); }
+                }
+                
+                document.getElementById('warga-sapaan').value = sapaan; document.getElementById('warga-nama-asli').value = namaAsli; document.getElementById('warga-password').value = data.password;
+
+                let blokSelect = "AMC 1", noRumah = data.blok;
+                if (data.blok.toUpperCase().includes("AMC 1")) { blokSelect = "AMC 1"; noRumah = data.blok.replace(/AMC 1/i, '').trim(); } 
+                else if (data.blok.toUpperCase().includes("AMC 2")) { blokSelect = "AMC 2"; noRumah = data.blok.replace(/AMC 2/i, '').trim(); }
+                else { blokSelect = "Kantor"; noRumah = data.blok; }
+                
+                document.getElementById('warga-blok-select').value = blokSelect; document.getElementById('warga-norumah').value = noRumah; document.getElementById('warga-wa').value = data.wa;
+            } else {
+                document.getElementById('warga-modal-title').innerText = "Tambah Warga Baru"; document.getElementById('warga-old-nama').value = ""; document.getElementById('warga-sapaan').value = "Pak."; document.getElementById('warga-nama-asli').value = ""; document.getElementById('warga-password').value = ""; document.getElementById('warga-role').value = "Warga"; document.getElementById('warga-blok-select').value = "AMC 1"; document.getElementById('warga-norumah').value = ""; document.getElementById('warga-wa').value = "";
+            }
+            openModal('modal-warga');
+        }
+
+        function saveWarga(e) {
+            e.preventDefault();
+            const oN = document.getElementById('warga-old-nama').value;
+            const sap = document.getElementById('warga-sapaan').value;
+            const nN = document.getElementById('warga-nama-asli').value.trim();
+            
+            const bSelect = document.getElementById('warga-blok-select').value;
+            let inputNo = document.getElementById('warga-norumah').value.trim();
+            inputNo = inputNo.replace(/^no\.?\s*/i, '');
+            
+            const b = bSelect === "Kantor" ? inputNo : bSelect + ' ' + inputNo;
+            
+            const p = document.getElementById('warga-password').value; const w = document.getElementById('warga-wa').value;
+            const roleAssign = document.getElementById('warga-role').value;
+
+            closeModal('modal-warga'); showLoading();
+            google.script.run.withSuccessHandler(res => { 
+                if(res.success) loadWargaAdmin(); 
+                else { hideLoading(); alert(res.message); } 
+            }).saveWarga(oN, nN, p, roleAssign, b, w, currentRole, sap);
+        }
+
+        function hapusWarga(nama) {
+            if(!confirm(`HAPUS PERMANEN data warga '${nama}' beserta tagihannya?`)) return; showLoading();
+            google.script.run.withSuccessHandler(res => { 
+                if(res.success) loadWargaAdmin(); 
+                else { hideLoading(); alert(res.message); } 
+            }).deleteWarga(nama, currentRole);
+        }
+
+        function loadProfilForm() {
+            const isAdmin = (currentRole === 'Admin' || currentRole === 'Superadmin');
+            
+            if (isAdmin) {
+                document.getElementById('profil-warga-name-group').classList.add('hidden');
+                document.getElementById('profil-admin-name-group').classList.remove('hidden');
+                document.getElementById('profil-nama-admin').value = currentName;
+            } else {
+                document.getElementById('profil-warga-name-group').classList.remove('hidden');
+                document.getElementById('profil-admin-name-group').classList.add('hidden');
+                
+                let sapaan = currentSapaan || "";
+                let namaAsli = String(currentName || "");
+
+                if (!sapaan) {
+                    if (namaAsli.toLowerCase().startsWith("pak. ")) { sapaan = "Pak."; namaAsli = namaAsli.replace(/^pak\.\s/i, ''); } 
+                    else if (namaAsli.toLowerCase().startsWith("bu. ")) { sapaan = "Bu."; namaAsli = namaAsli.replace(/^bu\.\s/i, ''); }
+                }
+                
+                document.getElementById('profil-sapaan').value = sapaan; 
+                document.getElementById('profil-nama-asli').value = namaAsli; 
+            }
+            
+            document.getElementById('profil-wa').value = (currentWa && currentWa !== "-") ? currentWa : "";
+            if(currentFoto && currentFoto !== "-") document.getElementById('profil-preview').src = currentFoto;
+        }
+
+        function submitProfil(e) {
+            e.preventDefault();
+            const isAdmin = (currentRole === 'Admin' || currentRole === 'Superadmin');
+            const nN = isAdmin ? document.getElementById('profil-nama-admin').value : currentName; 
+            
+            const p = document.getElementById('profil-password').value; 
+            const w = document.getElementById('profil-wa').value || "-"; 
+            const file = document.getElementById('profil-file').files[0];
+            
+            showLoading();
+            getBase64(file, function(base64Data, filename) {
+                google.script.run.withSuccessHandler(res => {
+                    hideLoading();
+                    if(res.success) {
+                        alert("Profil berhasil diperbarui!"); 
+                        currentUser = res.newUsername; currentName = res.newUsername; currentWa = w;
+                        
+                        const namaAman = String(currentName || "");
+                        const shortName = namaAman.split(' ').slice(0, 2).join(' ');
+                        document.getElementById('nav-title').innerText = `Halo, ${currentSapaan} ${shortName}`.trim(); 
+                        document.getElementById('profil-password').value = ''; 
+                        
+                        if (base64Data) { 
+                            currentFoto = base64Data; 
+                            const navAvatar = document.getElementById('nav-avatar'); 
+                            navAvatar.src = currentFoto; navAvatar.classList.remove('hidden'); 
+                        }
+                    } else alert(res.message);
+                }).updateMyProfile(currentUser, nN, p, w, base64Data, filename);
+            });
+        }
+    </script>
+</body>
+</html>
