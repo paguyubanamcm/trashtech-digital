@@ -96,9 +96,11 @@
 </head>
 <body>
 
-    <!-- Audio Player Tersembunyi (SUARA HORN KAPAL DARI GOOGLE DRIVE) -->
-    <!-- Ganti ID_FILE_AUDIO_ANDA_DISINI dengan ID unik dari file mp3/ogg di Google Drive Anda -->
-    <audio id="chime-sound" src="https://drive.google.com/uc?export=download&id=1xDIOnsqRbSHga6vurVQUAMQNip6PfXUh" preload="auto"></audio>
+    <!-- PERBAIKAN: Audio Player dengan Multi-Source (Google Drive + Fallback Eksternal) -->
+    <audio id="chime-sound" preload="auto">
+        <!-- Source : Memprioritaskan file mp3 dari link Google Drive Anda -->
+        <!-- GANTI TEKS "ID_FILE_MP3_ANDA_DISINI" dengan ID dari link Google Drive Anda -->
+        <source src="https://drive.google.com/uc?export=download&id=1xDIOnsqRbSHga6vurVQUAMQNip6PfXUh" type="audio/mpeg">
 
     <div id="loading-indicator" class="glass-card hidden">
         <div class="loader"></div> <span class="text-sm">Memproses API...</span>
