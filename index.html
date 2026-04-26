@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TrashTech - Perumahan</title>
-
-    <!-- TAMBAHAN: Favicon dari gambar yang Anda upload -->
-    <link rel="icon" type="image/png" href="https://freedomdigital.biz.id/gambarbebas/20260426-032151_Paguyuban_Ahsana_Modern_City_Mojosari.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="Paguyuban_Ahsana_Modern_City_Mojosari.png">
     
     <style>
         :root {
@@ -78,29 +78,33 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes bounceInfo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-cyan); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #loading-indicator { position: fixed; top: 20px; right: 20px; z-index: 999; padding: 10px 20px; display: flex; align-items: center; gap: 10px; }
 
         .pengumuman-item { padding: 12px; background: rgba(15, 23, 42, 0.6); border-left: 4px solid var(--accent-cyan); border-radius: 6px; margin-bottom: 12px; transition: 0.3s; }
         .pengumuman-item:hover { background: rgba(15, 23, 42, 0.9); }
+    
+    .clickable-banner { cursor: pointer; transition: 0.3s; }
+    .clickable-banner:hover { background: rgba(245, 158, 11, 0.15) !important; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); }
 
-        @media (max-width: 768px) {
-            .navbar { flex-direction: column; align-items: flex-start; }
-            .nav-tabs { width: 100%; justify-content: flex-start; overflow-x: auto; padding-bottom: 5px; }
-            h1 { font-size: 2rem; }
-            .hero { padding: 3rem 0; }
-        }
-    </style>
+    @media (max-width: 768px) {
+        .navbar { flex-direction: column; align-items: flex-start; }
+        .nav-tabs { width: 100%; justify-content: flex-start; overflow-x: auto; padding-bottom: 5px; }
+        h1 { font-size: 2rem; }
+        .hero { padding: 3rem 0; }
+    }
+</style>
 </head>
 <body>
 
     <!-- PERBAIKAN: Audio Player dengan Multi-Source (Google Drive + Fallback Eksternal) -->
     <audio id="chime-sound" preload="auto">
-        <!-- Source : Memprioritaskan file mp3 dari link Google Drive Anda -->
+        <!-- Source 1: Memprioritaskan file mp3 dari link Google Drive Anda -->
         <!-- GANTI TEKS "ID_FILE_MP3_ANDA_DISINI" dengan ID dari link Google Drive Anda -->
         <source src="https://drive.google.com/uc?export=download&id=1-FVrd_NyApeDSE-37apUBYgeHCmK153V" type="audio/mpeg">
+    </audio>
 
     <div id="loading-indicator" class="glass-card hidden">
         <div class="loader"></div> <span class="text-sm">Memproses API...</span>
@@ -114,11 +118,11 @@
             </div>
             
             <div style="margin-bottom: 10px;">
-                <img src="https://freedomdigital.biz.id/gambarbebas/20260311-015925_logo_sampahku_03.png" alt="Logo TrashTech" style="width: 140px; height: auto; filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.3));">
+                <img src="Paguyuban_Ahsana_Modern_City_Mojosari.png" alt="Logo TrashTech" style="width: 160px; height: auto; filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.3));">
             </div>
 
-            <h1>TrashTech <span class="text-gradient">AMCM</span></h1>
-            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal Paguyuban Warga AMCM Pembayaran Online Sampah</p>
+            <h1>TrashTech <span class="text-gradient">Manager</span></h1>
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal Paguyuban Warga AMCM Pembayaran Sampah Online</p>
             
             <div class="glass-card" style="max-width: 350px; margin: 0 auto; padding: 2rem; animation: fadeIn 0.5s ease;">
                 <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Masuk Sistem</h2>
@@ -145,7 +149,7 @@
         <!-- HEADER & NAVIGATION -->
         <div class="navbar">
             <div style="display: flex; align-items: center; gap: 15px;">
-                <img src="https://freedomdigital.biz.id/gambarbebas/20260311-015925_logo_sampahku_03.png" alt="Logo" style="width: 120px; height: 55px; object-fit: contain;">
+                <img src="Paguyuban_Ahsana_Modern_City_Mojosari.png" alt="Logo" style="width: 60px; height: 60px; object-fit: contain;">
                 <div style="width: 1px; height: 35px; background: var(--border-glass); margin: 0 5px;"></div>
                 
                 <img id="nav-avatar" src="" class="avatar hidden" alt="Avatar">
@@ -209,8 +213,8 @@
                 <button class="btn btn-warning btn-sm" id="btn-setup-db" onclick="setupDB()">🛠️ Setup DB Awal</button>
             </div>
 
-            <!-- FITUR BARU: Banner Peringatan Tertulis di Dashboard Warga -->
-            <div id="warga-reminder-banner" class="glass-card hidden" style="margin-bottom: 1.5rem; padding: 1.2rem; border: 1px solid var(--warning); background: rgba(245, 158, 11, 0.1);">
+            <!-- Banner Peringatan Tertulis di Dashboard Warga -->
+            <div id="warga-reminder-banner" class="glass-card hidden clickable-banner" style="margin-bottom: 1.5rem; padding: 1.2rem; border: 1px solid var(--warning); background: rgba(245, 158, 11, 0.1);" onclick="openQuickBayar()">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <span style="font-size: 2.2rem; animation: pulse 2s infinite;">⚠️</span>
@@ -219,7 +223,7 @@
                             <p class="text-sm" style="margin: 0; color: var(--text-main);" id="warga-reminder-text">...</p>
                         </div>
                     </div>
-                    <button class="btn" style="background: linear-gradient(90deg, #f59e0b, #d97706); white-space: nowrap; padding: 0.8rem 1.5rem;" onclick="openQuickBayar()">💸 Bayar Sekarang</button>
+                    <button class="btn" style="background: linear-gradient(90deg, #f59e0b, #d97706); white-space: nowrap; padding: 0.8rem 1.5rem; pointer-events: none;">💸 Bayar Sekarang</button>
                 </div>
             </div>
 
@@ -281,7 +285,6 @@
                         </div>
                     </div>
                     
-                    <!-- KELOMPOK NAMA UNTUK WARGA -->
                     <div class="form-group" id="profil-warga-name-group">
                         <label class="form-label">Sapaan & Nama Lengkap (Username)</label>
                         <div style="display: flex; gap: 10px;">
@@ -297,7 +300,6 @@
                         </div>
                     </div>
 
-                    <!-- KELOMPOK NAMA UNTUK ADMIN -->
                     <div class="form-group hidden" id="profil-admin-name-group">
                         <label class="form-label">Nama / Username Login</label>
                         <input type="text" id="profil-nama-admin" class="form-input" required>
@@ -509,10 +511,11 @@
         // ==========================================
         // KONFIGURASI API UNTUK VERCEL HOSTING
         // ==========================================
-        // PENTING: Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda yang berakhiran "/exec"
-        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxka4pQ_FLO1hcHgiFpo9yFgdHrwX2haw9f_DYvmO33rhx5iIMmGVYVwKiQPJhhIiBwtw/exec";
+        // PENTING: GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE SCRIPT ANDA!!!
+        // Contoh: const GAS_API_URL = "https://script.google.com/macros/s/AKfyc.../exec";
+        const GAS_API_URL = "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI";
 
-        if (typeof google === 'undefined' || GAS_API_URL !== "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI") {
+        if (typeof google === 'undefined' || GAS_API_URL === "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI") {
             window.google = {
                 script: {
                     run: {
@@ -521,7 +524,7 @@
                                 withFailureHandler: function(onFailure) { return createApiProxy(onSuccess, onFailure); },
                                 ...createApiProxy(onSuccess, err => {
                                     hideLoading(); 
-                                    alert("API Error: " + err.message + "\n\nPastikan URL Google Apps Script sudah dimasukkan di dalam file index.html Anda!");
+                                    alert("API Error: " + err.message);
                                 })
                             };
                         }
@@ -536,7 +539,7 @@
             methods.forEach(method => {
                 proxy[method] = function(...args) {
                     if (GAS_API_URL === "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI") {
-                        onFailure({message: "Mohon masukkan URL API Google Script Anda ke dalam variabel GAS_API_URL di kode HTML."});
+                        onFailure({message: "Mohon masukkan URL API Google Script Anda ke dalam variabel GAS_API_URL (Baris 425 di kode HTML)."});
                         return;
                     }
                     
@@ -556,7 +559,6 @@
         // FUNGSI UMUM & UI
         // ==========================================
         
-        // FUNGSI KONVERTER GAMBAR GOOGLE DRIVE
         function getDirectImageUrl(url) {
             if (!url || url === "-") return "-";
             if (url.includes("drive.google.com")) {
@@ -721,9 +723,14 @@
         }
 
         function logout() {
-            document.getElementById('username').value = ''; document.getElementById('password').value = '';
+            if(currentName) sessionStorage.removeItem('reminder_tagihan_v74_' + currentName);
+            
+            document.getElementById('username').value = ''; 
+            document.getElementById('password').value = '';
             document.getElementById('view-app').classList.add('hidden');
             document.getElementById('view-landing').classList.remove('hidden');
+            
+            currentUser = null; currentRole = null; currentName = null;
         }
 
         // ==========================================
@@ -855,7 +862,7 @@
         }
 
         function setupDB() {
-            if(!confirm("Aksi ini akan men-generate ulang database. Lanjutkan?")) return;
+            if(!confirm("Aksi ini akan men-generate ulang database (V7.4). Lanjutkan?")) return;
             showLoading();
             google.script.run.withSuccessHandler(res => { hideLoading(); alert(res.message); loadTagihan(); loadPengumuman(); loadPengaturanGlobal(); }).setupDatabase();
         }
@@ -975,14 +982,12 @@
                     const tglHariIni = today.getDate();
                     const nextMonthObj = calculateNextDueMonth(currentWargaBulanLunas);
                     
-                    // FITUR BARU: Menampilkan Banner Permanen di Atas Tabel Warga
                     const bannerEl = document.getElementById('warga-reminder-banner');
                     if (bannerEl) {
-                        // Muncul jika ada tunggakan ATAU sudah masuk tanggal 25 (untuk bulan depan)
                         if (hasUnpaid || tglHariIni >= 25) {
                             bannerEl.classList.remove('hidden');
                             if (hasUnpaid) {
-                                document.getElementById('warga-reminder-text').innerHTML = `Anda memiliki tagihan yang tertunda atau sudah saatnya membayar iuran untuk bulan <strong style="color: var(--accent-gold);">${nextMonthObj.formal}</strong>.`;
+                                document.getElementById('warga-reminder-text').innerHTML = `Anda memiliki tagihan yang belum lunas. Pembayaran bulan berikutnya (<strong style="color: var(--accent-gold);">${nextMonthObj.formal}</strong>) juga telah tiba.`;
                             } else {
                                 document.getElementById('warga-reminder-text').innerHTML = `Saatnya pembayaran iuran bulan berikutnya (<strong style="color: var(--accent-gold);">${nextMonthObj.formal}</strong>) telah tiba.`;
                             }
@@ -991,7 +996,6 @@
                         }
                     }
                     
-                    // Menampilkan Pop-Up Cerdas & Suara
                     if (hasUnpaid || tglHariIni >= 25) { 
                         const sapaanNamaEl = document.getElementById('reminder-sapaan-nama');
                         let namaAman = String(currentName || "");
@@ -1001,12 +1005,12 @@
                         const monthEl = document.getElementById('reminder-month');
                         if(monthEl) monthEl.innerText = nextMonthObj.formal;
                         
-                        if (!sessionStorage.getItem('reminder_tagihan_v73_' + currentName)) {
+                        if (!sessionStorage.getItem('reminder_tagihan_v74_' + currentName)) {
                             setTimeout(() => {
                                 openModal('modal-reminder'); 
                                 playChimeSound(); 
-                            }, 300);
-                            sessionStorage.setItem('reminder_tagihan_v73_' + currentName, 'true');
+                            }, 800);
+                            sessionStorage.setItem('reminder_tagihan_v74_' + currentName, 'true');
                         }
                     }
                 }
