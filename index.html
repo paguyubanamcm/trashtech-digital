@@ -489,9 +489,9 @@
         // KONFIGURASI API UNTUK VERCEL HOSTING
         // ==========================================
         // PENTING: Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda yang berakhiran "/exec"
-        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzsJp8geAOKY0G0TZ8o3dZ1NSaxls7PjAxYld63A4SLzkHq40acMcsAgmkM5ZB93dtAbg/exec";
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxAZF4EU7Xk27r__r5QSiUxLtfodguBbYvmv3iSGKV-HsH0Cj2BpWi2aoX1e7yFlx5OVA/exec";
 
-        if (typeof google === 'undefined' || GAS_API_URL !== "https://script.google.com/macros/s/AKfycbzsJp8geAOKY0G0TZ8o3dZ1NSaxls7PjAxYld63A4SLzkHq40acMcsAgmkM5ZB93dtAbg/exec") {
+        if (typeof google === 'undefined' || GAS_API_URL !== "https://script.google.com/macros/s/AKfycbxAZF4EU7Xk27r__r5QSiUxLtfodguBbYvmv3iSGKV-HsH0Cj2BpWi2aoX1e7yFlx5OVA/exec") {
             window.google = {
                 script: {
                     run: {
@@ -514,7 +514,7 @@
             const proxy = {};
             methods.forEach(method => {
                 proxy[method] = function(...args) {
-                    if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzsJp8geAOKY0G0TZ8o3dZ1NSaxls7PjAxYld63A4SLzkHq40acMcsAgmkM5ZB93dtAbg/exec") {
+                    if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbxAZF4EU7Xk27r__r5QSiUxLtfodguBbYvmv3iSGKV-HsH0Cj2BpWi2aoX1e7yFlx5OVA/exec") {
                         onFailure({message: "Mohon masukkan URL API Google Script Anda ke dalam variabel GAS_API_URL di kode HTML."});
                         return;
                     }
