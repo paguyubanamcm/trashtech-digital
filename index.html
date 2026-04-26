@@ -110,7 +110,7 @@
             </div>
 
             <h1>TrashTech <span class="text-gradient">AMCM</span></h1>
-            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal warga AMCM pembayaran Sampah Online.</p>
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal Warga AMCM Pembayaran Sampah Online</p>
             
             <div class="glass-card" style="max-width: 350px; margin: 0 auto; padding: 2rem; animation: fadeIn 0.5s ease;">
                 <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Masuk Sistem</h2>
@@ -259,7 +259,6 @@
                         </div>
                     </div>
                     
-                    <!-- KELOMPOK NAMA UNTUK WARGA -->
                     <div class="form-group" id="profil-warga-name-group">
                         <label class="form-label">Sapaan & Nama Lengkap (Username)</label>
                         <div style="display: flex; gap: 10px;">
@@ -275,7 +274,6 @@
                         </div>
                     </div>
 
-                    <!-- KELOMPOK NAMA UNTUK ADMIN -->
                     <div class="form-group hidden" id="profil-admin-name-group">
                         <label class="form-label">Nama / Username Login</label>
                         <input type="text" id="profil-nama-admin" class="form-input" required>
@@ -489,7 +487,7 @@
         // KONFIGURASI API UNTUK VERCEL HOSTING
         // ==========================================
         // PENTING: Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda yang berakhiran "/exec"
-        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzcSLI6Cv19lYwIHzTfKtXSfucH8lcvdHEX70ufJzx3Q7oEVXAk79nxI_lOye29pG5UkA/exec";
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycby0h7To_U_3MgC6ZJevzUC45RjmgrFm2tHPvXJW256x_q1ZG3sASpG1NOj_E-iDK6JRmw/exec";
 
         if (typeof google === 'undefined' || GAS_API_URL !== "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI") {
             window.google = {
@@ -534,6 +532,20 @@
         // ==========================================
         // FUNGSI UMUM & UI
         // ==========================================
+        
+        // FUNGSI KONVERTER GAMBAR GOOGLE DRIVE (PERBAIKAN THUMBNAIL)
+        function getDirectImageUrl(url) {
+            if (!url || url === "-") return "-";
+            // Jika link adalah link Google Drive, ubah menjadi link Thumbnail API agar tidak diblokir browser
+            if (url.includes("drive.google.com")) {
+                const match = url.match(/id=([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) {
+                    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+                }
+            }
+            return url;
+        }
+
         function playChimeSound() {
             const audio = document.getElementById('chime-sound');
             if (audio) {
@@ -578,9 +590,9 @@
             reader.onerror = error => { alert("Gagal membaca file!"); hideLoading(); };
         }
 
-        function openPreviewStruk(imageUrl) {
-            document.getElementById('preview-image-element').src = imageUrl;
-            document.getElementById('download-struk-btn').href = imageUrl;
+        function openPreviewStruk(renderUrl, originalUrl) {
+            document.getElementById('preview-image-element').src = renderUrl;
+            document.getElementById('download-struk-btn').href = originalUrl || renderUrl;
             openModal('modal-preview');
         }
 
@@ -641,7 +653,8 @@
                     document.getElementById('nav-subtitle').innerText = currentRole === 'Warga' ? currentBlok : `Akses: ${currentRole}`;
                     
                     const avatarEl = document.getElementById('nav-avatar');
-                    if(currentFoto && currentFoto !== "-") { avatarEl.src = currentFoto; avatarEl.classList.remove('hidden'); }
+                    let displayAvatar = getDirectImageUrl(currentFoto);
+                    if(displayAvatar && displayAvatar !== "-") { avatarEl.src = displayAvatar; avatarEl.classList.remove('hidden'); }
 
                     if(currentRole === 'Admin' || currentRole === 'Superadmin') {
                         document.getElementById('admin-tabs').style.display = 'flex';
@@ -669,7 +682,7 @@
             })
             .withFailureHandler(err => {
                 hideLoading();
-                document.getElementById('login-error').innerText = err.message || "Gagal terhubung ke Server.";
+                document.getElementById('login-error').innerText = err.message || "Gagal terhubung ke Server. Pastikan link API benar.";
                 document.getElementById('login-error').classList.remove('hidden');
             })
             .verifyLogin(u, p);
@@ -798,7 +811,7 @@
         }
 
         // ==========================================
-        // TAB 1: TAGIHAN & VALIDASI (V7.0 AGREGASI 1 BARIS)
+        // TAB 1: TAGIHAN & VALIDASI
         // ==========================================
         function setupTagihanHeader(isAdmin) {
             const tr = document.getElementById('tagihan-header');
@@ -810,7 +823,7 @@
         }
 
         function setupDB() {
-            if(!confirm("Aksi ini akan men-generate ulang database (V7.0). Lanjutkan?")) return;
+            if(!confirm("Aksi ini akan men-generate ulang database (V7.1). Lanjutkan?")) return;
             showLoading();
             google.script.run.withSuccessHandler(res => { hideLoading(); alert(res.message); loadTagihan(); loadPengumuman(); loadPengaturanGlobal(); }).setupDatabase();
         }
@@ -855,6 +868,9 @@
                     if(item.status === 'Lunas') badgeClass = 'badge-lunas';
                     if(item.status === 'Menunggu Validasi') badgeClass = 'badge-warning';
 
+                    // Konversi URL Google Drive asli menjadi URL API Rendering Gambar
+                    let imgRenderUrl = getDirectImageUrl(item.bukti);
+
                     let listLunasHtml = `<div class="text-sm text-cyan" style="max-width: 150px; white-space: normal; line-height:1.4;">${item.bulanLunas}</div>`;
                     let pendingHtml = '-';
                     let aksiHtml = '-';
@@ -865,7 +881,7 @@
                         
                         buktiHtml = `
                             <div style="text-align: center;">
-                                <img src="${item.bukti}" alt="Struk" style="width: 65px; height: 65px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid var(--border-glass); transition: 0.3s; background: rgba(0,0,0,0.2);" onmouseover="this.style.borderColor='var(--accent-cyan)'" onmouseout="this.style.borderColor='var(--border-glass)'" onclick="openPreviewStruk('${item.bukti}')" title="Klik untuk perbesar">
+                                <img src="${imgRenderUrl}" alt="Struk" style="width: 65px; height: 65px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid var(--border-glass); transition: 0.3s; background: rgba(0,0,0,0.2);" onmouseover="this.style.borderColor='var(--accent-cyan)'" onmouseout="this.style.borderColor='var(--border-glass)'" onclick="openPreviewStruk('${imgRenderUrl}', '${item.bukti}')" title="Klik untuk perbesar">
                                 <div style="margin-top: 4px;">
                                     <a href="${item.bukti}" target="_blank" class="proof-link" style="font-size: 0.7rem;">Buka Penuh</a>
                                 </div>
@@ -874,7 +890,7 @@
                         aksiHtml = `<div style="display:flex; flex-direction:column; gap:5px;"><button class="btn btn-sm btn-success" onclick="validasi(${item.rowIdx}, true)">Terima</button><button class="btn btn-sm btn-danger" onclick="validasi(${item.rowIdx}, false)">Tolak</button></div>`;
                     } else {
                         if (item.bukti !== "-") {
-                            buktiHtml = `<img src="${item.bukti}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px; cursor: pointer; opacity: 0.6;" onclick="openPreviewStruk('${item.bukti}')" title="Struk Terakhir">`;
+                            buktiHtml = `<img src="${imgRenderUrl}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px; cursor: pointer; opacity: 0.6;" onclick="openPreviewStruk('${imgRenderUrl}', '${item.bukti}')" title="Struk Terakhir">`;
                         }
                         if (item.status === 'Belum Lunas') {
                             aksiHtml = `<span class="text-sm text-muted">Menunggu Pembayaran</span>`;
@@ -1001,8 +1017,9 @@
                 hideLoading(); const tbody = document.getElementById('warga-body'); tbody.innerHTML = '';
                 if(data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="text-center">Belum ada data warga.</td></tr>`; return; }
                 data.forEach(u => {
+                    let displayAvatar = getDirectImageUrl(u.foto);
                     const fallbackIcon = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>`;
-                    const avatar = `<img src="${(u.foto && u.foto !== "-") ? u.foto : fallbackIcon}" class="avatar">`;
+                    const avatar = `<img src="${(displayAvatar && displayAvatar !== "-") ? displayAvatar : fallbackIcon}" class="avatar">`;
                     
                     const roleBadge = u.role === 'Admin' ? `<span class="badge badge-warning" style="margin-top:4px;">🛡️ Pengurus</span>` : `<span class="badge badge-lunas" style="margin-top:4px;">🏠 Warga</span>`;
                     
@@ -1108,7 +1125,9 @@
             }
             
             document.getElementById('profil-wa').value = (currentWa && currentWa !== "-") ? currentWa : "";
-            if(currentFoto && currentFoto !== "-") document.getElementById('profil-preview').src = currentFoto;
+            
+            let displayAvatar = getDirectImageUrl(currentFoto);
+            if(displayAvatar && displayAvatar !== "-") document.getElementById('profil-preview').src = displayAvatar;
         }
 
         function submitProfil(e) {
@@ -1134,6 +1153,7 @@
                         document.getElementById('profil-password').value = ''; 
                         
                         if (base64Data) { 
+                            // Untuk UI Instan kita bisa gunakan base64Data
                             currentFoto = base64Data; 
                             const navAvatar = document.getElementById('nav-avatar'); 
                             navAvatar.src = currentFoto; navAvatar.classList.remove('hidden'); 
