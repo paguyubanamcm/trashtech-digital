@@ -6,7 +6,7 @@
     <title>TrashTech - Perumahan</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://freedomdigital.biz.id/gambarbebas/20260426-032151_Paguyuban_Ahsana_Modern_City_Mojosari.png">
+    <link rel="icon" type="image/png" href="Paguyuban_Ahsana_Modern_City_Mojosari.png">
     
     <style>
         :root {
@@ -118,7 +118,7 @@
             </div>
             
             <div style="margin-bottom: 10px;">
-                <img src="https://freedomdigital.biz.id/gambarbebas/20260311-015925_logo_sampahku_03.png" alt="Logo TrashTech" style="width: 160px; height: auto; filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.3));">
+                <img src="logo_sampahku_03.png" alt="Logo TrashTech" style="width: 160px; height: auto; filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.3));">
             </div>
 
             <h1>TrashTech <span class="text-gradient">AMCM</span></h1>
@@ -293,7 +293,7 @@
                                 <option value="Bu.">Bu.</option>
                                 <option value="">-</option>
                             </select>
-                            <input type="text" id="profil-nama-asli" class="form-input" required disabled>
+                            <input type="text" id="profil-nama-asli" class="form-input" disabled>
                         </div>
                         <div class="text-sm text-warning" style="margin-top: 8px;">
                             🔒 <i>Identitas warga hanya dapat diubah oleh Pengurus.</i>
@@ -302,7 +302,7 @@
 
                     <div class="form-group hidden" id="profil-admin-name-group">
                         <label class="form-label">Nama / Username Login</label>
-                        <input type="text" id="profil-nama-admin" class="form-input" required>
+                        <input type="text" id="profil-nama-admin" class="form-input">
                         <div class="text-sm text-muted" style="margin-top: 8px;">
                             <i>Sebagai pengurus, Anda bebas mengganti username Anda sendiri.</i>
                         </div>
@@ -1192,6 +1192,12 @@
             e.preventDefault();
             const isAdmin = (currentRole === 'Admin' || currentRole === 'Superadmin');
             const nN = isAdmin ? document.getElementById('profil-nama-admin').value : currentName; 
+
+            // PERBAIKAN: Pengecekan nama admin kosong dilakukan di JavaScript, bukan HTML
+            if (isAdmin && !nN) {
+                alert("Nama / Username login tidak boleh kosong!");
+                return;
+            }
             
             const p = document.getElementById('profil-password').value; 
             const w = document.getElementById('profil-wa').value || "-"; 
