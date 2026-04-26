@@ -91,7 +91,7 @@
 </head>
 <body>
 
-    <!-- Audio Player Tersembunyi untuk Suara Notifikasi/Alarm (SUARA HORN KAPAL) -->
+    <!-- Audio Player Tersembunyi (SUARA HORN KAPAL LAUT) -->
     <audio id="chime-sound" src="https://www.myinstants.com/media/sounds/ship-horn.mp3" preload="auto"></audio>
 
     <div id="loading-indicator" class="glass-card hidden">
@@ -102,7 +102,7 @@
     <div id="view-landing" class="container">
         <div class="hero text-center" style="padding-top: 5vh;">
             <div style="display: inline-block; padding: 0.4rem 1rem; border-radius: 20px; background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.2); color: var(--accent-cyan); font-size: 0.8rem; margin-bottom: 1rem; font-weight: 600;">
-                TrashTech Sistem Sampah Digital Terpadu
+                TrashTech Sistem Digital Sampah Terpadu
             </div>
             
             <div style="margin-bottom: 10px;">
@@ -110,7 +110,7 @@
             </div>
 
             <h1>TrashTech <span class="text-gradient">AMCM</span></h1>
-            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal Paguyuban warga AMCM untuk pembayaran Sampah melalui Server</p>
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal warga AMCM pembayaran Sampah Online.</p>
             
             <div class="glass-card" style="max-width: 350px; margin: 0 auto; padding: 2rem; animation: fadeIn 0.5s ease;">
                 <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Masuk Sistem</h2>
@@ -259,6 +259,7 @@
                         </div>
                     </div>
                     
+                    <!-- KELOMPOK NAMA UNTUK WARGA -->
                     <div class="form-group" id="profil-warga-name-group">
                         <label class="form-label">Sapaan & Nama Lengkap (Username)</label>
                         <div style="display: flex; gap: 10px;">
@@ -274,6 +275,7 @@
                         </div>
                     </div>
 
+                    <!-- KELOMPOK NAMA UNTUK ADMIN -->
                     <div class="form-group hidden" id="profil-admin-name-group">
                         <label class="form-label">Nama / Username Login</label>
                         <input type="text" id="profil-nama-admin" class="form-input" required>
@@ -307,6 +309,7 @@
     <!-- MODALS AREA                                -->
     <!-- ========================================== -->
 
+    <!-- Modal Info/Pengumuman Baru -->
     <div id="modal-notif-pengumuman" class="modal-overlay hidden" style="z-index: 105;">
         <div class="glass-card modal-content text-center" style="border: 2px solid var(--accent-cyan); box-shadow: 0 0 30px rgba(14, 165, 233, 0.3);">
             <div style="font-size: 4rem; margin-bottom: 10px; animation: bounceInfo 1s infinite;">📢</div>
@@ -317,6 +320,7 @@
         </div>
     </div>
 
+    <!-- Modal Reminder Tagihan Pintar 3 Hari -->
     <div id="modal-reminder" class="modal-overlay hidden" style="z-index: 100;">
         <div class="glass-card modal-content text-center" style="border: 2px solid var(--warning); box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
             <div style="font-size: 4rem; margin-bottom: 10px; animation: pulse 2s infinite;">⏰</div>
@@ -333,6 +337,7 @@
         </div>
     </div>
 
+    <!-- Modal Tarif -->
     <div id="modal-tarif" class="modal-overlay hidden">
         <div class="glass-card modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -350,6 +355,7 @@
         </div>
     </div>
 
+    <!-- Modal Form Pengumuman -->
     <div id="modal-add-pengumuman" class="modal-overlay hidden">
         <div class="glass-card modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -370,6 +376,7 @@
         </div>
     </div>
 
+    <!-- Modal Pembayaran Warga -->
     <div id="modal-bayar" class="modal-overlay hidden" style="z-index: 110;">
         <div class="glass-card modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -404,6 +411,7 @@
         </div>
     </div>
 
+    <!-- Modal Manajemen Warga (Admin) -->
     <div id="modal-warga" class="modal-overlay hidden">
         <div class="glass-card modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -456,16 +464,15 @@
         </div>
     </div>
 
-    <div id="modal-preview" class="modal-overlay hidden">
-        <div class="glass-card modal-content" style="max-width: 500px; text-align: center; padding: 1.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h3 style="margin: 0;">Arsip Bukti Pembayaran</h3>
-                <button class="btn-outline btn-sm" style="border:none;" onclick="closeModal('modal-preview')">✕</button>
+    <!-- Modal Preview Struk Cerdas V7.0 -->
+    <div id="modal-preview" class="modal-overlay hidden" style="z-index: 1000;">
+        <div class="glass-card modal-content" style="max-width: 95vw; max-height: 95vh; text-align: center; padding: 1.5rem; overflow: auto; display: flex; flex-direction: column; align-items: center; position: relative;">
+            <button class="btn-danger btn-sm" style="position: absolute; top: 10px; right: 10px; z-index: 10;" onclick="closeModal('modal-preview')">✕ Tutup</button>
+            <h3 style="margin-bottom: 10px; color: var(--text-main); margin-top: 20px;">Pratinjau Struk</h3>
+            <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; margin-bottom: 1rem; width: 100%; display: flex; justify-content: center; overflow: auto;">
+                <img id="preview-image-element" src="" style="max-width: 100%; height: auto; border-radius: 6px; object-fit: contain;">
             </div>
-            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 1rem;">
-                <img id="preview-image-element" src="" style="max-width: 100%; max-height: 60vh; border-radius: 6px; object-fit: contain;">
-            </div>
-            <a id="download-struk-btn" href="#" download="Struk_Iuran.jpg" class="btn" style="width: 100%;">⬇️ Download Struk Ini</a>
+            <a id="download-struk-btn" href="#" target="_blank" class="btn" style="width: 100%; max-width: 300px;">Buka Penuh di Tab Baru (Untuk Zoom)</a>
         </div>
     </div>
 
@@ -482,9 +489,8 @@
         // KONFIGURASI API UNTUK VERCEL HOSTING
         // ==========================================
         // PENTING: Ganti URL di bawah ini dengan URL Web App Google Apps Script Anda yang berakhiran "/exec"
-        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxdg9fOAJZsFMYuH2TZ8DScyyhhILtUNSukxx5bGL3mQiAgBOkawUjmgSE1favZWaFh4A/exec";
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzcSLI6Cv19lYwIHzTfKtXSfucH8lcvdHEX70ufJzx3Q7oEVXAk79nxI_lOye29pG5UkA/exec";
 
-        // Proxy yang mengubah sistem Google Script lokal menjadi sistem Web API fetch murni
         if (typeof google === 'undefined' || GAS_API_URL !== "URL_WEB_APP_GOOGLE_SCRIPT_ANDA_DISINI") {
             window.google = {
                 script: {
@@ -494,7 +500,7 @@
                                 withFailureHandler: function(onFailure) { return createApiProxy(onSuccess, onFailure); },
                                 ...createApiProxy(onSuccess, err => {
                                     hideLoading(); 
-                                    alert("API Error: " + err.message + "\n\nPastikan URL Google Apps Script sudah dimasukkan di bagian bawah kode!");
+                                    alert("API Error: " + err.message + "\n\nPastikan URL Google Apps Script sudah dimasukkan di dalam file index.html Anda!");
                                 })
                             };
                         }
@@ -515,7 +521,6 @@
                     
                     fetch(GAS_API_URL, {
                         method: 'POST',
-                        // Mengirimkan request ke Apps Script layaknya REST API
                         body: JSON.stringify({ action: method, args: args })
                     })
                     .then(res => res.json())
@@ -533,7 +538,7 @@
             const audio = document.getElementById('chime-sound');
             if (audio) {
                 audio.currentTime = 0;
-                audio.play().catch(e => console.log("Audio diblokir oleh browser karena kebijakan Autoplay.", e));
+                audio.play().catch(e => console.log("Audio diblokir oleh browser.", e));
             }
         }
 
@@ -793,16 +798,19 @@
         }
 
         // ==========================================
-        // TAB 1: TAGIHAN & VALIDASI
+        // TAB 1: TAGIHAN & VALIDASI (V7.0 AGREGASI 1 BARIS)
         // ==========================================
         function setupTagihanHeader(isAdmin) {
             const tr = document.getElementById('tagihan-header');
-            if(isAdmin) tr.innerHTML = `<th>Warga & Kontak</th><th>Bulan Dibayar</th><th>Nominal</th><th>Bukti Transfer</th><th>Status</th><th>Aksi Validasi</th>`;
-            else tr.innerHTML = `<th>Periode Tagihan</th><th>Bulan Lunas</th><th>Nominal</th><th>Status</th><th>Aksi / Arsip Bukti</th>`;
+            if(isAdmin) {
+                tr.innerHTML = `<th>Warga & Kontak</th><th>Bulan Lunas</th><th>Validasi Aktif</th><th>Bukti Struk</th><th>Status</th><th>Aksi</th>`;
+            } else {
+                tr.innerHTML = `<th>Riwayat Lunas</th><th>Pengajuan Terakhir</th><th>Bukti Struk</th><th>Status</th><th>Aksi</th>`;
+            }
         }
 
         function setupDB() {
-            if(!confirm("Aksi ini akan men-generate ulang database (V6.0). Lanjutkan?")) return;
+            if(!confirm("Aksi ini akan men-generate ulang database (V7.0). Lanjutkan?")) return;
             showLoading();
             google.script.run.withSuccessHandler(res => { hideLoading(); alert(res.message); loadTagihan(); loadPengumuman(); loadPengaturanGlobal(); }).setupDatabase();
         }
@@ -832,8 +840,8 @@
                 const myRow = data.find(d => d.nama === currentName);
                 if (myRow) {
                     currentWargaRowIdx = myRow.rowIdx; 
-                    currentWargaBulan = myRow.bulan;
-                    currentWargaBulanLunas = myRow.bulanLunas; 
+                    currentWargaBulan = myRow.bulanPending;
+                    currentWargaBulanLunas = myRow.latestBulanLunas; 
                 }
 
                 data.forEach(item => {
@@ -847,48 +855,62 @@
                     if(item.status === 'Lunas') badgeClass = 'badge-lunas';
                     if(item.status === 'Menunggu Validasi') badgeClass = 'badge-warning';
 
-                    let btnLihatBukti = item.bukti !== "-" ? `<button class="btn btn-sm btn-outline" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="openPreviewStruk('${item.bukti}')">🖼️ Lihat Arsip Struk</button>` : `<span class="text-sm text-muted">Belum ada struk</span>`;
+                    let listLunasHtml = `<div class="text-sm text-cyan" style="max-width: 150px; white-space: normal; line-height:1.4;">${item.bulanLunas}</div>`;
+                    let pendingHtml = '-';
+                    let aksiHtml = '-';
+                    let buktiHtml = `<span class="text-sm text-muted" style="font-style: italic;">Tidak ada</span>`;
+
+                    if (item.status === 'Menunggu Validasi') {
+                        pendingHtml = `<strong>${item.bulanPending}</strong><br><small style="color:var(--accent-gold);">Rp ${Number(item.nominal).toLocaleString('id-ID')}</small><br><small class="text-muted">${item.tanggal}</small>`;
+                        
+                        buktiHtml = `
+                            <div style="text-align: center;">
+                                <img src="${item.bukti}" alt="Struk" style="width: 65px; height: 65px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid var(--border-glass); transition: 0.3s; background: rgba(0,0,0,0.2);" onmouseover="this.style.borderColor='var(--accent-cyan)'" onmouseout="this.style.borderColor='var(--border-glass)'" onclick="openPreviewStruk('${item.bukti}')" title="Klik untuk perbesar">
+                                <div style="margin-top: 4px;">
+                                    <a href="${item.bukti}" target="_blank" class="proof-link" style="font-size: 0.7rem;">Buka Penuh</a>
+                                </div>
+                            </div>`;
+                            
+                        aksiHtml = `<div style="display:flex; flex-direction:column; gap:5px;"><button class="btn btn-sm btn-success" onclick="validasi(${item.rowIdx}, true)">Terima</button><button class="btn btn-sm btn-danger" onclick="validasi(${item.rowIdx}, false)">Tolak</button></div>`;
+                    } else {
+                        if (item.bukti !== "-") {
+                            buktiHtml = `<img src="${item.bukti}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px; cursor: pointer; opacity: 0.6;" onclick="openPreviewStruk('${item.bukti}')" title="Struk Terakhir">`;
+                        }
+                        if (item.status === 'Belum Lunas') {
+                            aksiHtml = `<span class="text-sm text-muted">Menunggu Pembayaran</span>`;
+                        } else {
+                            aksiHtml = `<span class="text-sm text-success">✓ Semua Lunas</span>`;
+                        }
+                    }
+
                     const tr = document.createElement('tr');
                     
                     if(isAdmin) {
-                        let actionHtml = '-';
-                        if(item.status === 'Menunggu Validasi') {
-                            actionHtml = `<div style="display:flex; gap:5px;"><button class="btn btn-sm btn-success" onclick="validasi(${item.rowIdx}, true)">Terima</button><button class="btn btn-sm btn-danger" onclick="validasi(${item.rowIdx}, false)">Tolak</button></div>`;
-                        } else if(item.status === 'Belum Lunas') {
-                            actionHtml = `<span class="text-sm text-muted">Menunggu Transfer</span>`;
-                        } else if(item.status === 'Ditolak') {
-                            actionHtml = `<span class="text-sm text-danger">Ditolak</span>`;
-                        } else {
-                            actionHtml = `<span class="text-sm text-success">✓ Selesai</span>`;
-                        }
-
                         tr.innerHTML = `
                             <td><div style="font-weight:600;">${item.nama}</div><div class="text-sm text-muted">${item.blok} | <a href="https://wa.me/${item.wa}" class="proof-link">WA</a></div></td>
-                            <td>${item.bulanLunas !== "-" ? `<strong>${item.bulanLunas}</strong><br><small>${item.tanggal}</small>` : '-'}</td>
-                            <td>${item.nominal !== "-" ? 'Rp ' + Number(item.nominal).toLocaleString('id-ID') : '-'}</td>
-                            <td>${btnLihatBukti}</td>
+                            <td>${listLunasHtml}</td>
+                            <td>${pendingHtml}</td>
+                            <td>${buktiHtml}</td>
                             <td><span class="badge ${badgeClass}">${item.status}</span></td>
-                            <td>${actionHtml}</td>
+                            <td>${aksiHtml}</td>
                         `;
                     } else {
-                        let actionHtml = '';
+                        let actionWargaHtml = '';
                         if(item.status === 'Belum Lunas' || item.status === 'Ditolak') {
-                            actionHtml += `<button class="btn btn-sm" style="margin-bottom: 5px; width:100%;" onclick="openBayarModal(${item.rowIdx}, '${item.bulan}')">Upload Bukti Transfer</button><br>`;
+                            actionWargaHtml += `<button class="btn btn-sm" style="margin-bottom: 5px; width:100%;" onclick="openBayarModal(${item.rowIdx}, '${item.bulanPending}')">Upload Bukti Transfer</button><br>`;
                         } else if(item.status === 'Menunggu Validasi') {
-                            actionHtml += `<div class="text-sm text-warning" style="margin-bottom:5px;">⏳ Menunggu Konfirmasi Admin</div>`;
+                            actionWargaHtml += `<div class="text-sm text-warning" style="margin-bottom:5px;">⏳ Menunggu Konfirmasi Admin</div>`;
                         } else {
-                            actionHtml += `<div class="text-sm text-success" style="margin-bottom:5px;">✓ Tagihan Terbayar</div>`;
-                            actionHtml += `<button class="btn btn-sm btn-outline" style="margin-bottom: 5px; width:100%; border-color: var(--accent-gold); color: var(--accent-gold);" onclick="openBayarModal(${item.rowIdx}, '${item.bulan}')">⚡ Bayar Di Muka / Berikutnya</button><br>`;
+                            actionWargaHtml += `<div class="text-sm text-success" style="margin-bottom:5px;">✓ Tagihan Terbayar</div>`;
+                            actionWargaHtml += `<button class="btn btn-sm btn-outline" style="margin-bottom: 5px; width:100%; border-color: var(--accent-gold); color: var(--accent-gold);" onclick="openBayarModal(-1, '${item.bulanPending}')">⚡ Bayar Di Muka / Berikutnya</button><br>`;
                         }
 
-                        if(item.bukti !== "-") actionHtml += `<button class="btn btn-sm btn-outline" style="width:100%;" onclick="openPreviewStruk('${item.bukti}')">🖼️ Lihat Struk Disimpan</button>`;
-
                         tr.innerHTML = `
-                            <td><strong>${item.bulan}</strong></td>
-                            <td>${item.bulanLunas !== "-" ? item.bulanLunas : '-'}</td>
-                            <td>${item.nominal !== "-" ? 'Rp ' + Number(item.nominal).toLocaleString('id-ID') : '-'}</td>
+                            <td>${listLunasHtml}</td>
+                            <td>${item.status === 'Menunggu Validasi' ? pendingHtml : '-'}</td>
+                            <td>${buktiHtml}</td>
                             <td><span class="badge ${badgeClass}">${item.status}</span></td>
-                            <td>${actionHtml}</td>
+                            <td>${actionWargaHtml}</td>
                         `;
                     }
                     tbody.appendChild(tr);
@@ -915,12 +937,12 @@
                     const monthEl = document.getElementById('reminder-month');
                     if(monthEl) monthEl.innerText = nextMonthObj.formal;
                     
-                    if (!sessionStorage.getItem('reminder_tagihan_v60_' + currentName)) {
+                    if (!sessionStorage.getItem('reminder_tagihan_v70_' + currentName)) {
                         setTimeout(() => {
                             openModal('modal-reminder'); 
                             playChimeSound(); 
                         }, 300);
-                        sessionStorage.setItem('reminder_tagihan_v60_' + currentName, 'true');
+                        sessionStorage.setItem('reminder_tagihan_v70_' + currentName, 'true');
                     }
                 }
                 
@@ -946,8 +968,7 @@
         }
 
         function openQuickBayar() {
-            if(currentWargaRowIdx) openBayarModal(currentWargaRowIdx, currentWargaBulan);
-            else alert("Data tagihan Anda tidak ditemukan di sistem. Harap hubungi Admin.");
+            openBayarModal(currentWargaRowIdx || -1, currentWargaBulan);
         }
 
         function submitPayment(e) {
@@ -960,7 +981,7 @@
                 google.script.run.withSuccessHandler(res => {
                     if(res.success) { alert("Bukti Transfer Terkirim!"); loadTagihan(); document.querySelector('button[onclick="switchTab(\\\'tab-tagihan\\\', this)"]').click(); }
                     else { hideLoading(); alert("Gagal: " + res.message); }
-                }).submitPayment(rIdx, tgl, nom, bln, base64Data, filename);
+                }).submitPayment(rIdx, tgl, nom, bln, base64Data, filename, currentName, currentBlok, currentWa);
             });
         }
 
