@@ -74,6 +74,7 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes bounceInfo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-cyan); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #loading-indicator { position: fixed; top: 20px; right: 20px; z-index: 999; padding: 10px 20px; display: flex; align-items: center; gap: 10px; }
@@ -110,7 +111,7 @@
             </div>
 
             <h1>TrashTech <span class="text-gradient">Manager</span></h1>
-            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal Warga AMCM Pembayaran Sampah Online</p>
+            <p class="text-muted" style="max-width: 500px; margin: 0 auto 2rem auto;">Portal Paguyuban Warga AMCM Pembayaran Online Sampah</p>
             
             <div class="glass-card" style="max-width: 350px; margin: 0 auto; padding: 2rem; animation: fadeIn 0.5s ease;">
                 <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Masuk Sistem</h2>
@@ -199,6 +200,20 @@
             <div style="display: flex; justify-content: flex-end; margin-bottom: 10px; gap: 10px;" id="admin-setup-wrapper" class="hidden">
                 <button class="btn btn-outline btn-sm" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="generateTagihanMasal()">🔄 Buat Tagihan Warga Bulan Ini</button>
                 <button class="btn btn-warning btn-sm" id="btn-setup-db" onclick="setupDB()">🛠️ Setup DB Awal</button>
+            </div>
+
+            <!-- FITUR BARU: Banner Peringatan Tertulis di Dashboard Warga -->
+            <div id="warga-reminder-banner" class="glass-card hidden" style="margin-bottom: 1.5rem; padding: 1.2rem; border: 1px solid var(--warning); background: rgba(245, 158, 11, 0.1);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <span style="font-size: 2.2rem; animation: pulse 2s infinite;">⚠️</span>
+                        <div>
+                            <h3 style="margin-bottom: 4px; color: var(--warning);">Pengingat Pembayaran Iuran</h3>
+                            <p class="text-sm" style="margin: 0; color: var(--text-main);" id="warga-reminder-text">...</p>
+                        </div>
+                    </div>
+                    <button class="btn" style="background: linear-gradient(90deg, #f59e0b, #d97706); white-space: nowrap; padding: 0.8rem 1.5rem;" onclick="openQuickBayar()">💸 Bayar Sekarang</button>
+                </div>
             </div>
 
             <div class="table-wrapper glass-card">
@@ -320,14 +335,14 @@
         </div>
     </div>
 
-    <!-- Modal Reminder Tagihan Pintar 3 Hari -->
+    <!-- Modal Reminder Tagihan Pintar -->
     <div id="modal-reminder" class="modal-overlay hidden" style="z-index: 100;">
         <div class="glass-card modal-content text-center" style="border: 2px solid var(--warning); box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);">
             <div style="font-size: 4rem; margin-bottom: 10px; animation: pulse 2s infinite;">⏰</div>
             <h2 class="text-gradient" style="background: linear-gradient(90deg, var(--warning), #ea580c); -webkit-background-clip: text;">Pemberitahuan Tagihan</h2>
             <p class="text-main" style="margin-bottom: 15px; font-size: 1.1rem; line-height: 1.6;">
                 Silahkan <strong id="reminder-sapaan-nama" style="color: var(--accent-cyan);">...</strong>, 
-                untuk selesaikan pembayaran bulan berikutnya (<strong id="reminder-month" style="color: var(--accent-gold);">...</strong>).
+                untuk selesaikan pembayaran tagihan yang tertunda atau bulan berikutnya (<strong id="reminder-month" style="color: var(--accent-gold);">...</strong>).
             </p>
             <p class="text-sm text-muted" style="margin-bottom: 1.5rem;">Terima kasih atas partisipasi Anda dalam menjaga kebersihan lingkungan.</p>
             <div style="display: flex; gap: 10px; margin-top: 1.5rem;">
@@ -463,7 +478,7 @@
         </div>
     </div>
 
-    <!-- Modal Preview Struk Cerdas V7.0 -->
+    <!-- Modal Preview Struk Cerdas -->
     <div id="modal-preview" class="modal-overlay hidden" style="z-index: 1000;">
         <div class="glass-card modal-content" style="max-width: 95vw; max-height: 95vh; text-align: center; padding: 1.5rem; overflow: auto; display: flex; flex-direction: column; align-items: center; position: relative;">
             <button class="btn-danger btn-sm" style="position: absolute; top: 10px; right: 10px; z-index: 10;" onclick="closeModal('modal-preview')">✕ Tutup</button>
@@ -534,14 +549,12 @@
         // FUNGSI UMUM & UI
         // ==========================================
         
-        // FUNGSI KONVERTER GAMBAR GOOGLE DRIVE (PERBAIKAN ANTI-BLOKIR)
+        // FUNGSI KONVERTER GAMBAR GOOGLE DRIVE
         function getDirectImageUrl(url) {
             if (!url || url === "-") return "-";
-            // Jika link adalah link Google Drive, ubah menjadi link lh3 Google API agar tidak diblokir browser CORS
             if (url.includes("drive.google.com")) {
                 const match = url.match(/id=([a-zA-Z0-9_-]+)/) || url.match(/d\/([a-zA-Z0-9_-]+)/);
                 if (match && match[1]) {
-                    // Gunakan server lh3 Googleusercontent untuk merender gambar tanpa batas Cookie
                     return `https://lh3.googleusercontent.com/d/${match[1]}`;
                 }
             }
@@ -596,7 +609,6 @@
             const imgEl = document.getElementById('preview-image-element');
             imgEl.src = renderUrl;
             imgEl.onerror = function() { 
-                // Gambar ikon rusak merah sebagai fallback terakhir
                 this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ef4444'><path d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/></svg>";
             };
             document.getElementById('download-struk-btn').href = originalUrl || renderUrl;
@@ -659,7 +671,6 @@
                     document.getElementById('nav-title').innerText = `Halo, ${currentSapaan} ${shortName}`.trim();
                     document.getElementById('nav-subtitle').innerText = currentRole === 'Warga' ? currentBlok : `Akses: ${currentRole}`;
                     
-                    // Avatar Load dengan Fallback jika error
                     const avatarEl = document.getElementById('nav-avatar');
                     let displayAvatar = getDirectImageUrl(currentFoto);
                     const fallbackIcon = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>`;
@@ -837,7 +848,7 @@
         }
 
         function setupDB() {
-            if(!confirm("Aksi ini akan men-generate ulang database (V7.2). Lanjutkan?")) return;
+            if(!confirm("Aksi ini akan men-generate ulang database. Lanjutkan?")) return;
             showLoading();
             google.script.run.withSuccessHandler(res => { hideLoading(); alert(res.message); loadTagihan(); loadPengumuman(); loadPengaturanGlobal(); }).setupDatabase();
         }
@@ -952,27 +963,44 @@
                     document.getElementById('stat-lunas').innerText = cLunas;
                 }
                 
-                const today = new Date();
-                const tglHariIni = today.getDate();
-                
-                // NOTIFIKASI PINTAR (3 HARI - Tgl 25, 26, 27)
-                if (tglHariIni >= 25 && tglHariIni <= 27 && hasUnpaid && currentRole === 'Warga') { 
+                if (!isAdmin) {
+                    const today = new Date();
+                    const tglHariIni = today.getDate();
                     const nextMonthObj = calculateNextDueMonth(currentWargaBulanLunas);
                     
-                    const sapaanNamaEl = document.getElementById('reminder-sapaan-nama');
-                    let namaAman = String(currentName || "");
-                    let namaPanggilan = currentSapaan ? currentSapaan + " " + namaAman : namaAman;
-                    if(sapaanNamaEl) sapaanNamaEl.innerText = namaPanggilan;
+                    // FITUR BARU: Menampilkan Banner Permanen di Atas Tabel Warga
+                    const bannerEl = document.getElementById('warga-reminder-banner');
+                    if (bannerEl) {
+                        // Muncul jika ada tunggakan ATAU sudah masuk tanggal 25 (untuk bulan depan)
+                        if (hasUnpaid || tglHariIni >= 25) {
+                            bannerEl.classList.remove('hidden');
+                            if (hasUnpaid) {
+                                document.getElementById('warga-reminder-text').innerHTML = `Anda memiliki tagihan yang tertunda atau sudah saatnya membayar iuran untuk bulan <strong style="color: var(--accent-gold);">${nextMonthObj.formal}</strong>.`;
+                            } else {
+                                document.getElementById('warga-reminder-text').innerHTML = `Saatnya pembayaran iuran bulan berikutnya (<strong style="color: var(--accent-gold);">${nextMonthObj.formal}</strong>) telah tiba.`;
+                            }
+                        } else {
+                            bannerEl.classList.add('hidden');
+                        }
+                    }
                     
-                    const monthEl = document.getElementById('reminder-month');
-                    if(monthEl) monthEl.innerText = nextMonthObj.formal;
-                    
-                    if (!sessionStorage.getItem('reminder_tagihan_v70_' + currentName)) {
-                        setTimeout(() => {
-                            openModal('modal-reminder'); 
-                            playChimeSound(); 
-                        }, 300);
-                        sessionStorage.setItem('reminder_tagihan_v70_' + currentName, 'true');
+                    // Menampilkan Pop-Up Cerdas & Suara
+                    if (hasUnpaid || tglHariIni >= 25) { 
+                        const sapaanNamaEl = document.getElementById('reminder-sapaan-nama');
+                        let namaAman = String(currentName || "");
+                        let namaPanggilan = currentSapaan ? currentSapaan + " " + namaAman : namaAman;
+                        if(sapaanNamaEl) sapaanNamaEl.innerText = namaPanggilan;
+                        
+                        const monthEl = document.getElementById('reminder-month');
+                        if(monthEl) monthEl.innerText = nextMonthObj.formal;
+                        
+                        if (!sessionStorage.getItem('reminder_tagihan_v73_' + currentName)) {
+                            setTimeout(() => {
+                                openModal('modal-reminder'); 
+                                playChimeSound(); 
+                            }, 300);
+                            sessionStorage.setItem('reminder_tagihan_v73_' + currentName, 'true');
+                        }
                     }
                 }
                 
